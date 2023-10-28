@@ -1,9 +1,17 @@
+# -*- coding: utf-8 -*-
+# author: Nishant Sharma (https://github.com/sevendaystoglory/)
+# author: Madhav Kumar (https://github.com/madhav-mknc/)
+
 import requests
 from bs4 import BeautifulSoup
 import openai
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 # Initialize OpenAI
-openai.api_key = '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'
+openai.api_key = os.environ['OPENAI_API_KEY']
 
 def get_articles_from_url(url):
     print(f"Fetching articles from {url}...")
