@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# api key
+# bot init
 API_KEY = os.environ["BOT_API_KEY"]
 bot = telebot.TeleBot(API_KEY)
 
@@ -26,6 +26,9 @@ BOT COMMANDS:
 @bot.message_handler(commands=["start"])
 def start(x):
     # i am online
+    print(x)
+    with open('x.json', 'w') as file:
+        file.write(str(x))
     bot.reply_to(x, "Xtweet is online!")
 
 
