@@ -9,8 +9,7 @@ import time
 from utils import (
     get_daily_post,
     get_choice, 
-    submit_post, 
-    randi_rona
+    submit_post
 )
 
 # env
@@ -23,21 +22,40 @@ API_KEY = os.environ["BOT_API_KEY"]
 bot = telebot.TeleBot(API_KEY)
 
 
-# Function to send the daily post
-def send_daily_post(chat_id):
-    # Generate the daily post using your get_daily_post() function
-    daily_post = get_daily_post()
+# Registered users
+chat_ids = [
+    '1707920304',   # MKNC
+    '2044209665'    # Nishant
+]
 
+
+# global Post
+khabar_title = ""
+khabar_content = ""
+
+
+# Generate options
+def generate_options(options):
     # Create an inline keyboard with options
     markup = types.InlineKeyboardMarkup(row_width=1)
-    options = ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"]
-
     for option in options:
         button = types.InlineKeyboardButton(option, callback_data=option)
         markup.add(button)
+    return markup
 
-    # Send the daily post with options
+
+# Function to send the daily post
+def send_daily_post(chat_id):
+    options, daily_post = get_daily_post()
+    markup = generate_options(options)
     bot.send_message(chat_id, daily_post, reply_markup=markup)
+
+
+# Send all the registered users
+def send_all():
+    for chat_id in chat_ids:
+        send_daily_post(chat_id)
+
 
 # Function to handle user choices
 @bot.callback_query_handler(func=lambda call: True)
@@ -45,52 +63,63 @@ def handle_choice(call):
     choice = call.data
     chat_id = call.message.chat.id
 
-    # Generate the next message using your get_choice() function
-    next_message = get_choice(choice)
+    # submit (tweet)
+    if choice == "Submit":
+        submit_post(khabar_content)
 
-    # Send the next message
-    bot.send_message(chat_id, next_message)
+    # edit (randi_rona)
+    elif choice == "Edit":
+        maal = f"Title: {khabar_title}\nContent: {khabar_content}"
+        randi_rona(maal)
 
-# Function to handle the "final submit" or "edit" options
-@bot.message_handler(commands=['final_submit', 'edit'])
-def handle_final_submit(message):
+    # post selection
+    else:
+        global khabar_title, khabar_content
+        khabar_title, khabar_content = get_choice(choice)
+
+        next_message = "You have selected:\n# " + khabar_title + "\n" + khabar_content
+        options = ["Edit", "Submit"]
+        markup = generate_options(options)
+
+        bot.send_message(chat_id, next_message, reply_markup=markup)
+
+
+# hello
+@bot.message_handler(commands=["start", "get", "hello", "new", "now"])
+def start(message):
     chat_id = message.chat.id
-    command = message.text
 
-    if command == '/final_submit':
-        # Call your submit_post() function
-        submit_post()
-    elif command == '/edit':
-        # Start a conversation with the chatbot
-        bot.send_message(chat_id, "Editing your post. Please proceed with your changes.")
-        randi_rona(message)  # Use the alias here
+    if chat_id not in chat_ids:
+        bot.reply_to(message, "Hi! I am Xtweet.")
+    
+    else:
+        bot.reply_to(message, "Xtweet is online!")
+        send_daily_post(chat_id)
+
 
 # Function to process the chatbot conversation
-def chatbot(message):
-    # Your chatbot logic goes here
-    # You can use the message.chat.id to keep track of the conversation state
-
-    # Example:
-    chat_id = message.chat.id
-
+def randi_rona(message):
+    next_message = "What edits do you want to make?"
+    bot.reply_to(message, next_message)
+    
+                     
     # Handle chatbot conversation based on the message content
     # You can maintain conversation state using chat_id and other data structures
 
+
 # Function to start the daily post at 12:00 and 00:00
 def schedule_daily_post():
-    chat_id = '1707920304'  # Replace with your chat ID
     while True:
         current_time = time.localtime()
         if current_time.tm_hour == 12 or current_time.tm_hour == 0:
-            send_daily_post(chat_id)
-        time.sleep(60)  # Check every minute
+            send_all()
+        time.sleep(600)  # Check every 10 minutes
 
 if __name__ == '__main__':
-    # Start a thread to schedule daily posts
     import threading
     t = threading.Thread(target=schedule_daily_post)
     t.start()
 
     # Start the bot
-    send_daily_post('1707920304')
+    send_all()
     bot.polling()

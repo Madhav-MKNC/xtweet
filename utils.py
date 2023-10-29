@@ -6,27 +6,51 @@ import os
 import requests
 
 
-def get_daily_post():
+# daily posts 
+# 
+posts = {
+    "0": 'lora',
+    "1": 'lauda',
+    "2": 'laura',
+    "3": 'loda'
+}
+
+
+def get_new_stuff():
+    global posts
     # 
-    posts = []
-    content = "What to post today?\n"
-    for post in posts:
-        content += "\n" + str(post)
-    return content
+    posts = {
+        "0": 'lora',
+        "1": 'lauda',
+        "2": 'laura',
+        "3": 'loda'
+    }
+
+
+def get_daily_post():
+    titles = posts.keys()
+    content = "What to post today?"
+    for topic in posts:
+        content += "\n\n # " + topic
+        content += "\n" + posts[topic]
+
+    return titles, content
 
 
 def get_choice(choice):
-    # 
-    content = "[0] Edit post\n[1] Final Submit"
-    return content
+    title, post = posts.keys()[choice], posts.values()[choice]
+    return title, post
 
 
-def submit_post():
-    # 
-    pass
+def submit_post(content):
+    try:
+        # tweet it
+        return "Tweeted successfully!"
+    except Exception as e:
+        return f"Some error occurred: {e}"
 
 
-def randi_rona(message):
-    # 
-    return "Hello! I am xtweet"
+# def randi_rona(message):
+#     # 
+#     return "Hello! I am xtweet"
 

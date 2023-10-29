@@ -26,7 +26,9 @@ BOT COMMANDS:
 @bot.message_handler(commands=["start"])
 def start(x):
     # i am online
-    print(x.text)
+    print(x)
+    with open('x.json', 'w') as file:
+        file.write(str(x))
     bot.reply_to(x, "Xtweet is online!")
 
 
