@@ -78,6 +78,30 @@ def compare_tweets(tweets, prev_tweet):
     print("Summary completed!")
     return summary
 
+
+# edit the tweet
+def edit_tweet(suggestion="", tweet=""):
+    prompt = [
+        {
+            'role' : 'system', 
+            'content' : "You will be given a certain tweet. You are to enchance minimally the content as per the instrcutions provided by the user. Output only the final edited tweet and nothing else, for any exceptions you will output the same tweet. The user prompt will look like.\n\nTweet: {content of the tweet}\nInstruction: {user instructions}."
+        },
+        {
+            'role': 'user',
+            'content': f"Tweet: {tweet}\nInstruction: {suggestion}"
+        }
+    ]
+
+    response = openai.ChatCompletion.create(
+        messages = prompt,
+        model = "gpt-4",
+        temperature = 0.3,
+    )
+
+    reply = response.choices[0]['message']['content']
+    return reply
+
+
 # main
 def get_maal(base_url):
     articles = get_articles_from_url(base_url)
@@ -86,14 +110,15 @@ def get_maal(base_url):
         print("[-] No articles found.")
         exit()
 
-    if len(articles) > 5:
-        articles = random.sample(articles, 2)
+    MAX_ARTICLES = 5
+    if len(articles) > MAX_ARTICLES:
+        articles = random.sample(articles, MAX_ARTICLES)
     
     maal = []
     try:
         for i, article in enumerate(articles):
             url = article.get("link")
-            print(f'[{i}] {url}')
+            print(f'[{i+1}] {url}')
             content = scrape_content(url)
             tweet = summarize_with_openai(content)
             title = make_title_with_openai(tweet)

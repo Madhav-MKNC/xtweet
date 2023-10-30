@@ -6,7 +6,7 @@ import os
 import requests
 
 import openai
-from hot import get_maal
+from hot import get_maal, edit_tweet
 
 # env
 import os 
@@ -16,13 +16,27 @@ load_dotenv()
 openai.api_key = os.environ['OPENAI_API_KEY']
 
 # daily posts 
-articles_page = "https://www.artificialintelligence-news.com/"
-posts = get_maal(articles_page)
+def format_maal(og_maal):
+    maal = {}
+    for i in og_maal:
+        maal[i['topic']] = i['content']
+    return maal
+
+ARTICLES_PAGE = "https://www.artificialintelligence-news.com/"
+maal = get_maal(ARTICLES_PAGE)
+posts = format_maal(maal)
+# posts = {
+#     "0": 'lora',
+#     "1": 'lauda',
+#     "2": 'laura',
+#     "3": 'loda'
+# }
 
 # Update the daily posts
 def update_maal():
     global posts
-    posts = get_maal()
+    maal = get_maal(ARTICLES_PAGE)
+    posts = format_maal(maal)
 
 # Get daily posts
 def get_daily_post():
@@ -40,26 +54,10 @@ def get_choice(choice):
 
 # Function to process the chatbot conversation
 def randi_rona(text="", khabar_content=""):
-    prompt = [
-        {
-            'role' : 'system', 
-            'content' : "You will be given a certain tweet. You are to enchance minimally the content as per the instrcutions provided by the user. Output only the final edited tweet and nothing else, for any exceptions you will output the same tweet. The user prompt will look like.\n\nTweet: {content of the tweet}\nInstruction: {user instructions}."
-        },
-        {
-            'role': 'user',
-            'content': f"Tweet: {khabar_content}\nInstruction: {text}"
-        }
-    ]
-    print('prompt aagaya')
-
-    response = openai.ChatCompletion.create(
-        messages = prompt,
-        model = "gpt-4",
-        temperature = 0.3,
+    reply = edit_tweet(
+        suggestion = text,
+        tweet = khabar_content
     )
-    print('response aa gya malaidaar')
-
-    reply = response.choices[0]['message']['content']
     return reply
 
 # Tweet

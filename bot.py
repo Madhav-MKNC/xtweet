@@ -142,9 +142,7 @@ def edit(message):
         return 
 
     khabar_content = randi_rona(text=text, khabar_content=khabar_content)
-    print('randi rona hogya')
     chat_ids[chat_id]['khabar']['content'] = khabar_content
-    print('aagaya')
     bot.reply_to(message, khabar_content)
 
     next_message = "Confirm?"
@@ -199,14 +197,14 @@ def schedule_daily_post():
 
 # main
 def go_online():
-    print("x_tweet_bot is online...")
-
     # thread for scheduled messages
     t = threading.Thread(target=schedule_daily_post)
     t.start()
 
     try:
+        print('[ bot going online ]')
         send_all()
+        print("[#] x_tweet_bot is online...")
         bot.polling()
     except:
         global bot_online
