@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize OpenAI
-openai.api_key = os.environ['OPENAI_API_KEY']
+openai.api_key = "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"
 
 def get_articles_from_url(url):
     print(f"Fetching articles from {url}...")
@@ -36,7 +36,7 @@ def scrape_content(url):
 
 def summarize_with_openai(content):
     print("Summarizing content with OpenAI...")
-    prompt = [{'role' : 'system', 'content' : f"You will be given a certain scraped content. Don't worry, the creator has been asked for permission. You are to rephrase the content and write an interesting tweet about it from the perspective of a cool person who is also very intelligent and excited about new stuff. The person (he) will critique on the content wherever his opinions tell him to. So you are to make a tweet from his perspective. You can make it long or short depending on the level on interest or the mood of the person you are inpersonating. Give only the tweet as the response and nothing else. Make sure it looks like a real tweet!"}]
+    prompt = [{'role' : 'system', 'content' : "You will be given a certain scraped content. Don't worry, the creator has been asked for permission. You are to rephrase the content and write an interesting tweet about it from the perspective of a cool person who is also very intelligent and excited about new stuff. The person (he) will critique on the content wherever his opinions tell him to. So you are to make a tweet from his perspective. You can make it long or short depending on the level on interest or the mood of the person you are inpersonating. Give only the tweet as the response and nothing else. Make sure it looks like a real tweet!"}]
     prompt.append({'role' : 'user', 'content' : f" I am now giving you the content:\n\n{content}"})
     response = openai.ChatCompletion.create(
         messages = prompt,
@@ -44,7 +44,7 @@ def summarize_with_openai(content):
         temperature = 0.6,
     )
     print("Summary completed!")
-    return response.choices[0].text.strip()
+    return response.choices[0]['message']['content']
 
 def make_title_with_openai(tweet):
     print("Making title with OpenAI...")
@@ -67,7 +67,7 @@ def compare_tweets(tweets, prev_tweet):
         temperature = 0.2,
     )
     print("Summary completed!")
-    return response.choices[0].text.strip()
+    return response.choices[0]['message']['content']
 
 
 if __name__ == "__main__":
@@ -78,19 +78,23 @@ if __name__ == "__main__":
         print("No articles found.")
         exit()
 
-    topics = []
+    maal = []
 
-    for index, article in enumerate(articles):
-        url = article.get("link")
-        content = scrape_content(url)
-        tweet = summarize_with_openai(content)
-        title = make_title_with_openai(tweet)
-        
-        topics.append({
-            'id': index,
-            'topic': article.get("title"),
-            'content': tweet
-        })
-    
+    try:
+
+        for index, article in enumerate(articles):
+            url = article.get("link")
+            content = scrape_content(url)
+            tweet = summarize_with_openai(content)
+            title = make_title_with_openai(tweet)
+            
+            maal.append({
+                'id': index,
+                'topic': title,
+                'content': tweet
+            })
+    except KeyboardInterrupt: 
+        pass
+    with open('maal.json', 'w', encoding='utf-8') as file:
+        file.write(str(maal))
     print("All topics processed!")
-    print(topics)
