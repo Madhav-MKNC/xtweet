@@ -7,8 +7,6 @@ import requests
 
 import openai
 
-
-
 # env
 import os 
 from dotenv import load_dotenv
@@ -25,7 +23,7 @@ posts = {
     "3": 'loda'
 }
 
-
+# Update the daily posts
 def get_new_stuff():
     global posts
     # 
@@ -36,29 +34,19 @@ def get_new_stuff():
         "3": 'loda'
     }
 
-
+# Get daily posts
 def get_daily_post():
     titles = posts.keys()
     content = "What to post today?"
     for topic in posts:
         content += "\n\n # " + topic
         content += "\n" + posts[topic]
-
     return titles, content
 
-
+# Get selected post
 def get_choice(choice):
     post = posts[choice]
     return post
-
-
-def submit_post(content):
-    try:
-        # tweet it
-        return f"Tweeted successfully!\n\n{content}"
-    except Exception as e:
-        return f"Some error occurred please select again.\nError: {e}"
-
 
 # Function to process the chatbot conversation
 def randi_rona(text="", khabar_content=""):
@@ -83,3 +71,12 @@ def randi_rona(text="", khabar_content=""):
 
     reply = response.choices[0]['message']['content']
     return reply
+
+# Tweet
+def submit_post(content):
+    try:
+        # tweet it
+        return f"Tweeted successfully!\n\n{content}"
+    except Exception as e:
+        return f"Some error occurred please select again.\nError: {e}"
+    
