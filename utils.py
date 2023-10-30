@@ -6,6 +6,7 @@ import os
 import requests
 
 import openai
+from hot import get_maal
 
 # env
 import os 
@@ -15,24 +16,13 @@ load_dotenv()
 openai.api_key = os.environ['OPENAI_API_KEY']
 
 # daily posts 
-# 
-posts = {
-    "0": 'lora',
-    "1": 'lauda',
-    "2": 'laura',
-    "3": 'loda'
-}
+articles_page = "https://www.artificialintelligence-news.com/"
+posts = get_maal(articles_page)
 
 # Update the daily posts
-def get_new_stuff():
+def update_maal():
     global posts
-    # 
-    posts = {
-        "0": 'lora',
-        "1": 'lauda',
-        "2": 'laura',
-        "3": 'loda'
-    }
+    posts = get_maal()
 
 # Get daily posts
 def get_daily_post():

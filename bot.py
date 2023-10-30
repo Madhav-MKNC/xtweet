@@ -12,7 +12,8 @@ from utils import (
     get_daily_post,
     get_choice, 
     submit_post,
-    randi_rona
+    randi_rona,
+    update_maal
 )
 
 from users import chat_ids
@@ -123,6 +124,7 @@ def start(message):
         bot.reply_to(message, "Hi! I am Xtweet.")
     
     else:
+        update_maal()
         bot.reply_to(message, "Xtweet is online!")
         send_daily_post(chat_id)
 
@@ -190,6 +192,7 @@ def schedule_daily_post():
     while bot_online:
         current_time = time.localtime()
         if current_time.tm_hour == 12 or current_time.tm_hour == 0:
+            update_maal()
             send_all()
         time.sleep(600)  # Check every 10 minutes
 

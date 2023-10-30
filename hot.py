@@ -86,14 +86,14 @@ def get_maal(base_url):
         print("[-] No articles found.")
         exit()
 
-    if len(article) > 5:
-        articles = random.sample(articles, 5)
+    if len(articles) > 5:
+        articles = random.sample(articles, 2)
     
     maal = []
     try:
-        for article in articles:
+        for i, article in enumerate(articles):
             url = article.get("link")
-            print('[ ]', url)
+            print(f'[{i}] {url}')
             content = scrape_content(url)
             tweet = summarize_with_openai(content)
             title = make_title_with_openai(tweet)
@@ -103,7 +103,9 @@ def get_maal(base_url):
                 'content': tweet
             })
     except KeyboardInterrupt: 
-        pass
+        print("closing...")
+    except Exception as e:
+        print("[!] Error occured:",str(e))
 
     with open('maal.json', 'w', encoding='utf-8') as file:
         json.dump(maal, file)
