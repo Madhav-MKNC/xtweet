@@ -38,16 +38,16 @@ def get_daily_post():
 
 
 def get_choice(choice):
-    title, post = posts.keys()[choice], posts.values()[choice]
-    return title, post
+    post = posts[choice]
+    return post
 
 
 def submit_post(content):
     try:
         # tweet it
-        return "Tweeted successfully!"
+        return f"Tweeted successfully!\n\n{content}"
     except Exception as e:
-        return f"Some error occurred: {e}"
+        return f"Some error occurred please select again.\nError: {e}"
 
 
 # def randi_rona(message):
