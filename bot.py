@@ -11,8 +11,11 @@ import time
 from utils import (
     get_daily_post,
     get_choice, 
-    submit_post
+    submit_post,
+    randi_rona
 )
+
+from users import chat_ids
 
 # env
 import os 
@@ -23,18 +26,6 @@ load_dotenv()
 API_KEY = os.environ["BOT_API_KEY"]
 bot = telebot.TeleBot(API_KEY)
 bot_online = True
-
-
-# Registered users
-chat_ids = [
-    1707920304,   # MKNC
-    2044209665    # Nishant
-]
-
-
-# global Post
-khabar_title = ""
-khabar_content = ""
 
 
 # Generate options
@@ -60,16 +51,6 @@ def send_all():
         send_daily_post(chat_id)
 
 
-# Function to process the chatbot conversation
-def randi_rona(message):
-    next_message = "What edits do you want to make?"
-    bot.reply_to(message, next_message)
-
-                     
-    # Handle chatbot conversation based on the message content
-    # You can maintain conversation state using chat_id and other data structures
-
-
 # Function to handle user choices
 @bot.callback_query_handler(func=lambda call: True)
 def handle_choice(call):
@@ -78,7 +59,9 @@ def handle_choice(call):
     message_id = call.message.id
     chat_id = call.message.chat.id
 
-    global khabar_title, khabar_content
+    global chat_ids
+    khabar_title = chat_ids[chat_id]['khabar']['title']
+    khabar_content = chat_ids[chat_id]['khabar']['content']
 
     # approved
     if choice == "Yes":
@@ -101,21 +84,34 @@ def handle_choice(call):
 
     # edit (randi_rona)
     elif choice == "Edit":
+        next_message = "Use /edit for making suggestions.\nExamples:\n'/edit make it shorter'\n'/edit remove all the emojis'"
         bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
-        
-        maal = f"Title: {khabar_title}\nContent: {khabar_content}"
-        randi_rona(maal)
+        bot.send_message(chat_id, next_message)
 
     # post selection
     else:
         khabar_title = choice
         khabar_content = get_choice(khabar_title)
+        
+        # update the new global khabar for the user
+        chat_ids[chat_id]['khabar']['title'] = khabar_title
+        chat_ids[chat_id]['khabar']['content'] = khabar_content
 
         next_message = "You have selected:\n# " + khabar_title + "\n" + khabar_content
         options = ["Edit", "Submit"]
         markup = generate_options(options)
 
         bot.send_message(chat_id, next_message, reply_markup=markup)
+
+
+"""
+COMMANDS:
+
+/get            ==> get hot posts to tweet (other commands: /start, /hello, /new, /new, /now, hi)
+/edit           ==> make suggestions in the post content
+/tweet          ==> tweet a manually edited post
+/heyyy          ==> hot secret command
+"""
 
 
 # hello
@@ -131,6 +127,51 @@ def start(message):
         send_daily_post(chat_id)
 
 
+# edit
+@bot.message_handler(commands=["edit"])
+def edit(message):
+    chat_id = message.chat.id
+    text = message.text[5:].strip()
+
+    global chat_ids
+    khabar_content = chat_ids[chat_id]['khabar']['content']
+
+    if not text or chat_id not in chat_ids:
+        return 
+
+    khabar_content = randi_rona(text=text, khabar_content=khabar_content)
+    print('randi rona hogya')
+    chat_ids[chat_id]['khabar']['content'] = khabar_content
+    print('aagaya')
+    bot.reply_to(message, khabar_content)
+
+    next_message = "Confirm?"
+    options = ["Yes", "No"]
+    markup = generate_options(options)
+
+    bot.send_message(chat_id, next_message, reply_markup=markup)
+
+
+# tweet
+@bot.message_handler(commands=["tweet"])
+def tweet(message):
+    chat_id = message.chat.id
+    text = message.text[6:].strip()
+
+    global chat_ids
+
+    if not text or chat_id not in chat_ids:
+        return
+    
+    chat_ids[chat_id]['khabar']['content'] = text
+
+    next_message = "Confirm?"
+    options = ["Yes", "No"]
+    markup = generate_options(options)
+
+    bot.send_message(chat_id, next_message, reply_markup=markup)
+
+    
 # # heyyy
 # @bot.message_handler(commands=["heyyy"])
 # def heyyy(message):
@@ -165,6 +206,7 @@ def go_online():
         send_all()
         bot.polling()
     except:
+        global bot_online
         bot_online = False
         exit()
 
