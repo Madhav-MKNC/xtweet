@@ -31,6 +31,14 @@ bot = telebot.TeleBot(API_KEY)
 bot_online = True
 
 
+# save logs 
+def save_logs(message):
+    if not os.path.exists('tmp'): os.makedirs('tmp')
+    with open('tmp/logs.txt', 'a') as file:
+        logs = f"\n[/start] FROM: ({message.from_user.username}, {message.from_user.first_name} {message.from_user.last_name}, {message.from_user.id}) ON: ({message.chat.title}, {message.chat.username}, {message.chat.first_name} {message.chat.last_name}, {message.chat.id})\n"
+        file.write(logs)
+
+
 # Generate options
 def generate_options(options):
     # Create an inline keyboard with options
@@ -119,13 +127,12 @@ COMMANDS:
 
 
 # hello
-@bot.message_handler(commands=["start"])
+@bot.message_handler(commands=["start", "hello", "hi"])
 def start(message):
-    if not os.path.exists('tmp'): os.makedirs('tmp')
-    with open('tmp/user.json', 'w') as file:
-        file.write(str(message))
+    # save logs
+    save_logs(message)
 
-    INFO = """Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/start - For generating hot tweets\n/tweet - For manually written tweets"""
+    INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets"
     bot.reply_to(message, INFO)
 
 
@@ -133,7 +140,6 @@ def start(message):
 @bot.message_handler(commands=["login"])
 def login(message):
     # 
-    
     user_username = message.from_user.username
     user_first_name = message.from_user.first_name
     user_last_name = message.from_user.last_name
@@ -145,12 +151,11 @@ def login(message):
     chat_last_name = message.chat.last_name
     chat_id = message.chat.id
 
-
     print(f"[/] TEXT: {message.text} FROM: ({user_username}, {user_first_name} {user_last_name}, {user_id}) ON: ({chat_title}, {chat_username}, {chat_first_name} {chat_last_name}, {chat_id})")
 
 
 # get
-@bot.message_handler(commands=["get", "hello", "new", "now", "hi"])
+@bot.message_handler(commands=["get", "new", "now"])
 def get(message):
     chat_id = message.chat.id
 
