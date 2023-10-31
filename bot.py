@@ -110,6 +110,7 @@ def handle_choice(call):
 """
 COMMANDS:
 /start          ==> entry point
+/login          ==> for bot access
 /get            ==> get hot posts to tweet (other commands: /hello, /new, /new, /now, hi)
 /edit           ==> make suggestions in the post content
 /tweet          ==> tweet a manually edited post
@@ -120,13 +121,19 @@ COMMANDS:
 # hello
 @bot.message_handler(commands=["start"])
 def start(message):
-    # 
     if not os.path.exists('tmp'): os.makedirs('tmp')
     with open('tmp/user.json', 'w') as file:
         file.write(str(message))
 
     INFO = """Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/start - For generating hot tweets\n/tweet - For manually written tweets"""
+    bot.reply_to(message, INFO)
 
+
+# login
+@bot.message_handler(commands=["login"])
+def login(message):
+    # 
+    
     user_username = message.from_user.username
     user_first_name = message.from_user.first_name
     user_last_name = message.from_user.last_name
@@ -140,7 +147,6 @@ def start(message):
 
 
     print(f"[/] TEXT: {message.text} FROM: ({user_username}, {user_first_name} {user_last_name}, {user_id}) ON: ({chat_title}, {chat_username}, {chat_first_name} {chat_last_name}, {chat_id})")
-    bot.reply_to(message, INFO)
 
 
 # get
