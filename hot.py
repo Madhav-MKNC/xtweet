@@ -147,8 +147,10 @@ def get_maal(base_url):
     except Exception as e:
         print("[!] Error occured:",str(e))
 
-    with open('maal.json', 'w', encoding='utf-8') as file:
+    if not os.path.exists('tmp'): os.makedirs('tmp')
+    with open('tmp/maal.json', 'w', encoding='utf-8') as file:
         json.dump(maal, file)
+    
     print("[+] All topics processed!")
     return maal
 

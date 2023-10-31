@@ -119,18 +119,19 @@ COMMANDS:
 
 # hello
 @bot.message_handler(commands=["start"])
-def tweet(message):
+def start(message):
     # 
-    import json
-    with open('user.json', 'w') as file:
-        json.dump(message, file)
+    if not os.path.exists('tmp'): os.makedirs('tmp')
+    with open('tmp/user.json', 'w') as file:
+        file.write(str(message))
 
+    print(f"[/start] FROM: ({message.from_user.username}, {message.from_user.first_name} {message.from_user.last_name}, {message.from_user.id}) ON: ({message.chat.title}, {message.chat.id})")
     bot.reply_to(message, "Hello!")
 
 
 # get
 @bot.message_handler(commands=["get", "hello", "new", "now", "hi"])
-def start(message):
+def get(message):
     chat_id = message.chat.id
 
     if chat_id not in admins_chat_ids:

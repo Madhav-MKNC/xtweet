@@ -12,28 +12,29 @@ load_dotenv()
 
 openai.api_key = os.environ['OPENAI_API_KEY']
 
-# daily posts 
-def format_maal(og_maal):
-    maal = {}
-    for i in og_maal:
-        maal[i['topic']] = i['content']
+
+# get maal
+def synthesize_maal():
+    # ARTICLES_PAGE = "https://www.artificialintelligence-news.com/"
+    # articles = get_maal(ARTICLES_PAGE)
+    # maal = {}
+    # for i in articles:
+    #     maal[i['topic']] = i['content']
+    maal = {
+        "0": 'lora',
+        "1": 'lauda',
+        "2": 'laura',
+        "3": 'loda'
+    }
     return maal
 
-ARTICLES_PAGE = "https://www.artificialintelligence-news.com/"
-maal = get_maal(ARTICLES_PAGE)
-posts = format_maal(maal)
-# posts = {
-#     "0": 'lora',
-#     "1": 'lauda',
-#     "2": 'laura',
-#     "3": 'loda'
-# }
+# daily posts
+posts = synthesize_maal()
 
 # Update the daily posts
 def update_maal():
     global posts
-    maal = get_maal(ARTICLES_PAGE)
-    posts = format_maal(maal)
+    posts = synthesize_maal()
 
 # Get daily posts
 def get_daily_post():
