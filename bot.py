@@ -125,8 +125,22 @@ def start(message):
     with open('tmp/user.json', 'w') as file:
         file.write(str(message))
 
-    print(f"[/start] FROM: ({message.from_user.username}, {message.from_user.first_name} {message.from_user.last_name}, {message.from_user.id}) ON: ({message.chat.title}, {message.chat.id})")
-    bot.reply_to(message, "Hello!")
+    INFO = """Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/start - For generating hot tweets\n/tweet - For manually written tweets"""
+
+    user_username = message.from_user.username
+    user_first_name = message.from_user.first_name
+    user_last_name = message.from_user.last_name
+    user_id = message.from_user.id
+
+    chat_title = message.chat.title
+    chat_username = message.chat.username
+    chat_first_name = message.chat.first_name
+    chat_last_name = message.chat.last_name
+    chat_id = message.chat.id
+
+
+    print(f"[/] TEXT: {message.text} FROM: ({user_username}, {user_first_name} {user_last_name}, {user_id}) ON: ({chat_title}, {chat_username}, {chat_first_name} {chat_last_name}, {chat_id})")
+    bot.reply_to(message, INFO)
 
 
 # get
