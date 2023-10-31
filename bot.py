@@ -16,7 +16,9 @@ from utils import (
     update_maal
 )
 
-from users import chat_ids
+from users import (
+    admins_chat_ids
+)
 
 # env
 import os 
@@ -48,7 +50,7 @@ def send_daily_post(chat_id):
 
 # Send all the registered users
 def send_all():
-    for chat_id in chat_ids:
+    for chat_id in admins_chat_ids:
         send_daily_post(chat_id)
 
 
@@ -60,9 +62,9 @@ def handle_choice(call):
     message_id = call.message.id
     chat_id = call.message.chat.id
 
-    global chat_ids
-    khabar_title = chat_ids[chat_id]['khabar']['title']
-    khabar_content = chat_ids[chat_id]['khabar']['content']
+    global admins_chat_ids
+    khabar_title = admins_chat_ids[chat_id]['khabar']['title']
+    khabar_content = admins_chat_ids[chat_id]['khabar']['content']
 
     # approved
     if choice == "Yes":
@@ -95,8 +97,8 @@ def handle_choice(call):
         khabar_content = get_choice(khabar_title)
         
         # update the new global khabar for the user
-        chat_ids[chat_id]['khabar']['title'] = khabar_title
-        chat_ids[chat_id]['khabar']['content'] = khabar_content
+        admins_chat_ids[chat_id]['khabar']['title'] = khabar_title
+        admins_chat_ids[chat_id]['khabar']['content'] = khabar_content
 
         next_message = "You have selected:\n# " + khabar_title + "\n" + khabar_content
         options = ["Edit", "Submit"]
@@ -107,8 +109,8 @@ def handle_choice(call):
 
 """
 COMMANDS:
-
-/get            ==> get hot posts to tweet (other commands: /start, /hello, /new, /new, /now, hi)
+/start          ==> entry point
+/get            ==> get hot posts to tweet (other commands: /hello, /new, /new, /now, hi)
 /edit           ==> make suggestions in the post content
 /tweet          ==> tweet a manually edited post
 /heyyy          ==> hot secret command
@@ -116,11 +118,22 @@ COMMANDS:
 
 
 # hello
-@bot.message_handler(commands=["start", "get", "hello", "new", "now", "hi"])
+@bot.message_handler(commands=["start"])
+def tweet(message):
+    # 
+    import json
+    with open('user.json', 'w') as file:
+        json.dump(message, file)
+
+    bot.reply_to(message, "Hello!")
+
+
+# get
+@bot.message_handler(commands=["get", "hello", "new", "now", "hi"])
 def start(message):
     chat_id = message.chat.id
 
-    if chat_id not in chat_ids:
+    if chat_id not in admins_chat_ids:
         bot.reply_to(message, "Hi! I am Xtweet.")
     
     else:
@@ -135,14 +148,14 @@ def edit(message):
     chat_id = message.chat.id
     text = message.text[5:].strip()
 
-    global chat_ids
-    khabar_content = chat_ids[chat_id]['khabar']['content']
+    global admins_chat_ids
+    khabar_content = admins_chat_ids[chat_id]['khabar']['content']
 
-    if not text or chat_id not in chat_ids:
+    if not text or chat_id not in admins_chat_ids:
         return 
 
     khabar_content = randi_rona(text=text, khabar_content=khabar_content)
-    chat_ids[chat_id]['khabar']['content'] = khabar_content
+    admins_chat_ids[chat_id]['khabar']['content'] = khabar_content
     bot.reply_to(message, khabar_content)
 
     next_message = "Confirm?"
@@ -158,12 +171,12 @@ def tweet(message):
     chat_id = message.chat.id
     text = message.text[6:].strip()
 
-    global chat_ids
+    global admins_chat_ids
 
-    if not text or chat_id not in chat_ids:
+    if not text or chat_id not in admins_chat_ids:
         return
     
-    chat_ids[chat_id]['khabar']['content'] = text
+    admins_chat_ids[chat_id]['khabar']['content'] = text
 
     next_message = "Confirm?"
     options = ["Yes", "No"]
@@ -177,7 +190,7 @@ def tweet(message):
 # def heyyy(message):
 #     chat_id = message.chat.id
 
-#     if chat_id not in chat_ids:
+#     if chat_id not in admins_chat_ids:
 #         bot.reply_to(message, "Naughty hora ke bkl!")
     
 #     else:
