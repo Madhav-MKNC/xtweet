@@ -2,9 +2,6 @@
 # author: Madhav Kumar (https://github.com/madhav-mknc/)
 # author: Nishant Sharma (https://github.com/sevendaystoglory/)
 
-import os
-import requests
-
 import openai
 from hot import get_maal, edit_tweet
 

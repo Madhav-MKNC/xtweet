@@ -203,7 +203,7 @@ def go_online():
 
     try:
         print('[ bot going online ]')
-        send_all()
+        # send_all()
         print("[#] x_tweet_bot is online...")
         bot.polling()
     except:
