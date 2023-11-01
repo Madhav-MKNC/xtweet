@@ -17,7 +17,9 @@ from utils import (
 )
 
 from users import (
-    admins_chat_ids
+    users_chat_ids,
+    admins_chat_ids, 
+    ADMIN_CHAT_ID
 )
 
 # env
@@ -58,7 +60,7 @@ def send_daily_post(chat_id):
 
 # Send all the registered users
 def send_all():
-    for chat_id in admins_chat_ids:
+    for chat_id in users_chat_ids:
         send_daily_post(chat_id)
 
 
@@ -70,9 +72,9 @@ def handle_choice(call):
     message_id = call.message.id
     chat_id = call.message.chat.id
 
-    global admins_chat_ids
-    khabar_title = admins_chat_ids[chat_id]['khabar']['title']
-    khabar_content = admins_chat_ids[chat_id]['khabar']['content']
+    global users_chat_ids
+    khabar_title = users_chat_ids[chat_id]['khabar']['title']
+    khabar_content = users_chat_ids[chat_id]['khabar']['content']
 
     # approved
     if choice == "Yes":
@@ -105,8 +107,8 @@ def handle_choice(call):
         khabar_content = get_choice(khabar_title)
         
         # update the new global khabar for the user
-        admins_chat_ids[chat_id]['khabar']['title'] = khabar_title
-        admins_chat_ids[chat_id]['khabar']['content'] = khabar_content
+        users_chat_ids[chat_id]['khabar']['title'] = khabar_title
+        users_chat_ids[chat_id]['khabar']['content'] = khabar_content
 
         next_message = "You have selected:\n# " + khabar_title + "\n" + khabar_content
         options = ["Edit", "Submit"]
@@ -115,18 +117,26 @@ def handle_choice(call):
         bot.send_message(chat_id, next_message, reply_markup=markup)
 
 
+# COMMANDS
 """
-COMMANDS:
+For general users:
 /start          ==> entry point (other commands: /hello, /hi, /help)
 /login          ==> for bot access
+
+For registered users:
 /get            ==> get hot posts to tweet (other commands: /new, /now)
 /edit           ==> make suggestions in the post content
 /tweet          ==> tweet a manually edited post
-/heyyy          ==> hot secret command
+# /auth           ==> authenticate twitter for posting tweets
+
+For admin users:
+# /add_url        ==> add new articles url
+# /remove         ==> remove a user
+# /heyyy          ==> hot secret command
 """
 
 
-# hello
+# hello (general users)
 @bot.message_handler(commands=["start", "hello", "hi", "help"])
 def start(message):
     # save logs
@@ -136,7 +146,7 @@ def start(message):
     bot.reply_to(message, INFO)
 
 
-# login
+# login (GENERAL USERS)
 @bot.message_handler(commands=["login"])
 def login(message):
     # 
@@ -154,12 +164,12 @@ def login(message):
     print(f"[/] TEXT: {message.text} FROM: ({user_username}, {user_first_name} {user_last_name}, {user_id}) ON: ({chat_title}, {chat_username}, {chat_first_name} {chat_last_name}, {chat_id})")
 
 
-# get
+# get (REGISTERED USERS)
 @bot.message_handler(commands=["get", "new", "now"])
 def get(message):
     chat_id = message.chat.id
 
-    if chat_id not in admins_chat_ids:
+    if chat_id not in users_chat_ids:
         return
     
     else:
@@ -168,20 +178,20 @@ def get(message):
         send_daily_post(chat_id)
 
 
-# edit
+# edit (REGISTERED USERS)
 @bot.message_handler(commands=["edit"])
 def edit(message):
     chat_id = message.chat.id
     text = message.text[5:].strip()
 
-    global admins_chat_ids
-    khabar_content = admins_chat_ids[chat_id]['khabar']['content']
+    global users_chat_ids
+    khabar_content = users_chat_ids[chat_id]['khabar']['content']
 
-    if not text or chat_id not in admins_chat_ids:
+    if not text or chat_id not in users_chat_ids:
         return 
 
     khabar_content = randi_rona(text=text, khabar_content=khabar_content)
-    admins_chat_ids[chat_id]['khabar']['content'] = khabar_content
+    users_chat_ids[chat_id]['khabar']['content'] = khabar_content
     bot.reply_to(message, khabar_content)
 
     next_message = "Confirm?"
@@ -191,33 +201,61 @@ def edit(message):
     bot.send_message(chat_id, next_message, reply_markup=markup)
 
 
-# tweet
+# tweet (REGISTERED USERS)
 @bot.message_handler(commands=["tweet"])
 def tweet(message):
     chat_id = message.chat.id
     text = message.text[6:].strip()
 
-    global admins_chat_ids
+    global users_chat_ids
 
-    if not text or chat_id not in admins_chat_ids:
+    if not text or chat_id not in users_chat_ids:
         return
     
-    admins_chat_ids[chat_id]['khabar']['content'] = text
+    users_chat_ids[chat_id]['khabar']['content'] = text
 
-    # next_message = "Confirm?"
-    # options = ["Yes", "No"]
-    # markup = generate_options(options)
-
-    # bot.send_message(chat_id, next_message, reply_markup=markup)
- 
     next_message = "You have selected:\n" + text
     options = ["Edit", "Submit"]
     markup = generate_options(options)
 
     bot.send_message(chat_id, next_message, reply_markup=markup)
 
+
+# # authenticate twitter (REGISTERED USERS)
+# @bot.message_handler(commands=["auth"])
+# def auth(message):
+#     chat_id = message.chat.id
+#     text = message.text[5:].strip()
+
+#     if not text or chat_id not in users_chat_ids:
+#         return
     
-# # heyyy
+#     bot.reply_to(message, "[feature under construction]")
+
+
+# # add new url for articles (ADMIN USERS)
+# @bot.message_handler(commands=["add_url"])
+# def add_url(message):
+#     chat_id = message.chat.id
+
+#     if chat_id not in admins_chat_ids:
+#         return 
+    
+#     bot.reply_to(message, "add url!")
+
+
+# # remove a registered user (ADMIN USERS)
+# @bot.message_handler(commands=["remove"])
+# def remove(message):
+#     chat_id = message.chat.id
+
+#     if chat_id not in admins_chat_ids:
+#         return 
+    
+#     bot.reply_to(message, "remove!")
+
+    
+# # heyyy (ADMIN USERS)
 # @bot.message_handler(commands=["heyyy"])
 # def heyyy(message):
 #     chat_id = message.chat.id
@@ -225,9 +263,7 @@ def tweet(message):
 #     if chat_id not in admins_chat_ids:
 #         return 
     
-#     else:
-#         with open('.env', 'w') as file:
-#             file.write("")
+#     bot.reply_to(message, "heyyy!")
 
 
 # Function to start the daily post at 12:00 and 00:00
