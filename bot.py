@@ -117,7 +117,7 @@ def handle_choice(call):
 
 """
 COMMANDS:
-/start          ==> entry point (other commands: /hello, hi)
+/start          ==> entry point (other commands: /hello, /hi, /help)
 /login          ==> for bot access
 /get            ==> get hot posts to tweet (other commands: /new, /now)
 /edit           ==> make suggestions in the post content
@@ -127,7 +127,7 @@ COMMANDS:
 
 
 # hello
-@bot.message_handler(commands=["start", "hello", "hi"])
+@bot.message_handler(commands=["start", "hello", "hi", "help"])
 def start(message):
     # save logs
     save_logs(message)
