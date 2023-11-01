@@ -32,10 +32,10 @@ bot_online = True
 
 
 # save logs 
-def save_logs(message):
+def save_logs(message, command="/"):
     if not os.path.exists('tmp'): os.makedirs('tmp')
     with open('tmp/logs.txt', 'a') as file:
-        logs = f"\n[/start] FROM: ({message.from_user.username}, {message.from_user.first_name} {message.from_user.last_name}, {message.from_user.id}) ON: ({message.chat.title}, {message.chat.username}, {message.chat.first_name} {message.chat.last_name}, {message.chat.id})\n"
+        logs = f"\n[{command}] FROM: ({message.from_user.username}, {message.from_user.first_name} {message.from_user.last_name}, {message.from_user.id}) ON: ({message.chat.title}, {message.chat.username}, {message.chat.first_name} {message.chat.last_name}, {message.chat.id})\n"
         file.write(logs)
 
 
@@ -130,7 +130,7 @@ COMMANDS:
 @bot.message_handler(commands=["start", "hello", "hi", "help"])
 def start(message):
     # save logs
-    save_logs(message)
+    save_logs(message, command="/start")
 
     INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets"
     bot.reply_to(message, INFO)
@@ -210,7 +210,7 @@ def tweet(message):
 
     # bot.send_message(chat_id, next_message, reply_markup=markup)
  
-    next_message = "You have selected:\n" + khabar_content
+    next_message = "You have selected:\n" + text
     options = ["Edit", "Submit"]
     markup = generate_options(options)
 
