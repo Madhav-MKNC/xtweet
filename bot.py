@@ -204,8 +204,14 @@ def tweet(message):
     
     admins_chat_ids[chat_id]['khabar']['content'] = text
 
-    next_message = "Confirm?"
-    options = ["Yes", "No"]
+    # next_message = "Confirm?"
+    # options = ["Yes", "No"]
+    # markup = generate_options(options)
+
+    # bot.send_message(chat_id, next_message, reply_markup=markup)
+ 
+    next_message = "You have selected:\n" + khabar_content
+    options = ["Edit", "Submit"]
     markup = generate_options(options)
 
     bot.send_message(chat_id, next_message, reply_markup=markup)
