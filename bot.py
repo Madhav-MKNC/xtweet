@@ -117,9 +117,9 @@ def handle_choice(call):
 
 """
 COMMANDS:
-/start          ==> entry point
+/start          ==> entry point (other commands: /hello, hi)
 /login          ==> for bot access
-/get            ==> get hot posts to tweet (other commands: /hello, /new, /new, /now, hi)
+/get            ==> get hot posts to tweet (other commands: /new, /now)
 /edit           ==> make suggestions in the post content
 /tweet          ==> tweet a manually edited post
 /heyyy          ==> hot secret command
@@ -160,7 +160,7 @@ def get(message):
     chat_id = message.chat.id
 
     if chat_id not in admins_chat_ids:
-        bot.reply_to(message, "Hi! I am Xtweet.")
+        return
     
     else:
         update_maal()
@@ -217,7 +217,7 @@ def tweet(message):
 #     chat_id = message.chat.id
 
 #     if chat_id not in admins_chat_ids:
-#         bot.reply_to(message, "Naughty hora ke bkl!")
+#         return 
     
 #     else:
 #         with open('.env', 'w') as file:
