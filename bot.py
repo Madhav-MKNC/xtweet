@@ -78,9 +78,10 @@ def handle_choice(call):
     message_id = call.message.id
     chat_id = call.message.chat.id
 
+    global users_chat_ids
+
     # user ka maamla chal rha hai (posting)
     if choice in ["Yes", "No", "Submit", "Edit"]:
-        global users_chat_ids
         khabar_title = users_chat_ids[chat_id]['khabar']['title']
         khabar_content = users_chat_ids[chat_id]['khabar']['content']
 
@@ -161,8 +162,8 @@ For registered users:
 # /auth           ==> authenticate twitter for posting tweets
 
 For admin users:
+/remove         ==> remove a user
 # /add_url        ==> add new articles url
-# /remove         ==> remove a user
 # /heyyy          ==> hot secret command
 """
 
@@ -173,7 +174,14 @@ def start(message):
     # save logs
     save_logs(message, command="/start")
 
-    INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets"
+    chat_id = message.chat.id
+    
+    if chat_id in admins_chat_ids:
+        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets\n/remove USER_ID - For deleting a user"
+
+    else:
+        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets"
+
     bot.reply_to(message, INFO)
 
 
@@ -292,15 +300,24 @@ def tweet(message):
 #     bot.reply_to(message, "add url!")
 
 
-# # remove a registered user (ADMIN USERS)
-# @bot.message_handler(commands=["remove"])
-# def remove(message):
-#     chat_id = message.chat.id
+# remove a registered user (ADMIN USERS)
+@bot.message_handler(commands=["remove"])
+def remove(message):
+    chat_id = message.chat.id
+    text = message.text[7:].strip() # this should be user id of the user to be deleted
 
-#     if chat_id not in admins_chat_ids:
-#         return 
+    if chat_id not in admins_chat_ids[0:1]:
+        return 
     
-#     bot.reply_to(message, "remove!")
+    try:
+        global users_chat_ids
+        user_id = int(text)
+        users_chat_ids.pop(user_id)
+        save_users(users_chat_ids)
+        bot.reply_to(message, f"Deleted user_id:{user_id}")
+        bot.send_message(user_id, "Your access has been terminated!")
+    except Exception as e:
+        bot.reply_to(message, f"Some error while deleting a user, error: {e}")
 
     
 # # heyyy (ADMIN USERS)

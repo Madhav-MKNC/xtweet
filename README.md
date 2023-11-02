@@ -16,5 +16,16 @@ Telegram bot for auto tweeting
 
 #### For admin users:
 - <code>/add_url        ==> add new articles url</code>
-- <code>/remove         ==> remove a user</code>
+- /remove         ==> remove a user
 - <code>/heyyy          ==> hot secret command</code>
+
+## TODO 
+
+- admins commands from admins server group
+- Use langchain for url summarizing (version 3)
+- twitter posting
+- twitter authorization 
+- retweeting/reposting, replying (version 2)
+- add url by /add_url
+
+- change inline keyboard type
