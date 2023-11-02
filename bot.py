@@ -124,7 +124,8 @@ For general users:
 /login          ==> for bot access
 
 For registered users:
-/get            ==> get hot posts to tweet (other commands: /new, /now)
+/get            ==> get hot posts to tweet
+/new            ==> update the maal
 /edit           ==> make suggestions in the post content
 /tweet          ==> tweet a manually edited post
 # /auth           ==> authenticate twitter for posting tweets
@@ -165,17 +166,27 @@ def login(message):
 
 
 # get (REGISTERED USERS)
-@bot.message_handler(commands=["get", "new", "now"])
+@bot.message_handler(commands=["get"])
 def get(message):
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
         return
     
-    else:
-        update_maal()
-        bot.reply_to(message, "Xtweet is online!")
-        send_daily_post(chat_id)
+    send_daily_post(chat_id)
+
+
+# new (REGISTERED USERS)
+@bot.message_handler(commands=["new"])
+def new(message):
+    chat_id = message.chat.id
+
+    if chat_id not in users_chat_ids:
+        return
+    
+    bot.reply_to(message, "Generating... might take a minute")
+    update_maal()
+    send_daily_post(chat_id)
 
 
 # edit (REGISTERED USERS)
