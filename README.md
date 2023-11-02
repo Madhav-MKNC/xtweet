@@ -8,12 +8,13 @@ Telegram bot for auto tweeting
 - /login          ==> for bot access
 
 #### For registered users:
-- /get            ==> get hot posts to tweet (other commands: /new, /now)
+- /get            ==> get hot posts to tweet
+- /new            ==> update the maal
 - /edit           ==> make suggestions in the post content
 - /tweet          ==> tweet a manually edited post
-- /auth           ==> authenticate twitter for posting tweets
+- <code>/auth           ==> authenticate twitter for posting tweets</code>
 
 #### For admin users:
-* /add_url        ==> add new articles url
-* /remove         ==> remove a user
-* /heyyy          ==> hot secret command
+- <code>/add_url        ==> add new articles url</code>
+- <code>/remove         ==> remove a user</code>
+- <code>/heyyy          ==> hot secret command</code>
