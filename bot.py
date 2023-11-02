@@ -19,7 +19,8 @@ from utils import (
 from users import (
     users_chat_ids,
     admins_chat_ids, 
-    ADMIN_CHAT_ID
+    ADMIN_CHAT_ID, 
+    save_users
 )
 
 # env
@@ -27,14 +28,13 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+# previous /new hit
+previous_generate = time.time()
+
 # bot init
 API_KEY = os.environ["BOT_API_KEY"]
 bot = telebot.TeleBot(API_KEY)
 bot_online = True
-
-# previous /new hit
-from time import time
-previous_generate = time()
 
 
 # save logs 
@@ -74,40 +74,64 @@ def send_all():
 @bot.callback_query_handler(func=lambda call: True)
 def handle_choice(call):
     choice = call.data
-    # message = call.message
+    message = call.message
     message_id = call.message.id
     chat_id = call.message.chat.id
 
-    global users_chat_ids
-    khabar_title = users_chat_ids[chat_id]['khabar']['title']
-    khabar_content = users_chat_ids[chat_id]['khabar']['content']
+    # user ka maamla chal rha hai (posting)
+    if choice in ["Yes", "No", "Submit", "Edit"]:
+        global users_chat_ids
+        khabar_title = users_chat_ids[chat_id]['khabar']['title']
+        khabar_content = users_chat_ids[chat_id]['khabar']['content']
 
-    # approved
-    if choice == "Yes":
-        status = submit_post(khabar_content)
-        bot.send_message(chat_id, status)
-        bot.delete_message(chat_id, message_id)
-    
-    # denied
-    elif choice == "No":
-        bot.delete_message(chat_id, message_id)
+        # approved
+        if choice == "Yes":
+            status = submit_post(khabar_content)
+            bot.send_message(chat_id, status)
+            bot.delete_message(chat_id, message_id)
+        
+        # denied
+        elif choice == "No":
+            bot.delete_message(chat_id, message_id)
 
-    # submit (tweet)
-    elif choice == "Submit":
-        next_message = "Confirm?"
-        options = ["Yes", "No"]
-        markup = generate_options(options)
+        # submit (tweet)
+        elif choice == "Submit":
+            next_message = "Confirm?"
+            options = ["Yes", "No"]
+            markup = generate_options(options)
 
-        bot.send_message(chat_id, next_message, reply_markup=markup)
-        bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+            bot.send_message(chat_id, next_message, reply_markup=markup)
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
 
-    # edit (randi_rona)
-    elif choice == "Edit":
-        next_message = "Use /edit for making suggestions.\nExamples:\n'/edit make it shorter'\n'/edit remove all the emojis'"
-        bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
-        bot.send_message(chat_id, next_message)
+        # edit (randi_rona)
+        elif choice == "Edit":
+            next_message = "Use /edit for making suggestions.\nExamples:\n'/edit make it shorter'\n'/edit remove all the emojis'"
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+            bot.send_message(chat_id, next_message)
 
-    # post selection
+    # admin ka maamla chal rha hai (approve or reject)
+    elif choice in ["APPROVE", "REJECT"]:
+        requesting_user_id = int(message.text.strip().split()[-1])
+
+        # approve bot access
+        if choice == "APPROVE":
+            users_chat_ids[requesting_user_id] = {
+                "khabar": {
+                    "title": "",
+                    "content": ""
+                }
+            }
+            save_users(users_chat_ids)
+            bot.send_message(requesting_user_id, "Access Granted!")
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+            bot.send_message(chat_id, message.text.replace('Grant access?','Access Granted to:'))
+
+        # reject bot access
+        elif choice == "REJECT":
+            bot.send_message(requesting_user_id, "Access Rejected!")
+            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+
+    # user ka hi maamla chal rha hai (post selection)
     else:
         khabar_title = choice
         khabar_content = get_choice(khabar_title)
@@ -156,19 +180,21 @@ def start(message):
 # login (GENERAL USERS)
 @bot.message_handler(commands=["login"])
 def login(message):
-    # 
+    user_id = message.from_user.id
+
+    if user_id in users_chat_ids:
+        return 
+
     user_username = message.from_user.username
     user_first_name = message.from_user.first_name
     user_last_name = message.from_user.last_name
-    user_id = message.from_user.id
 
-    chat_title = message.chat.title
-    chat_username = message.chat.username
-    chat_first_name = message.chat.first_name
-    chat_last_name = message.chat.last_name
-    chat_id = message.chat.id
+    next_message = f"Grant access?\nusername: {user_username}\nfirst name: {user_first_name}\nlast name: {user_last_name}\nuser id: {user_id}" # don't change it (see "elif 'APPROVE'" code) 
+    options = ["APPROVE", "REJECT"]
+    markup = generate_options(options)
 
-    print(f"[/] TEXT: {message.text} FROM: ({user_username}, {user_first_name} {user_last_name}, {user_id}) ON: ({chat_title}, {chat_username}, {chat_first_name} {chat_last_name}, {chat_id})")
+    for admin in admins_chat_ids[0:1]:
+        bot.send_message(admin, next_message, reply_markup=markup)
 
 
 # get (REGISTERED USERS)
@@ -190,13 +216,13 @@ def new(message):
     if chat_id not in users_chat_ids:
         return
     
-    if time() - previous_generate < 100:
+    if time.time() - previous_generate < 100:
         bot.reply_to(message, "Generating...")
         return
     
     bot.reply_to(message, "Generating... might take a minute")
     update_maal()
-    previous_generate = time()
+    previous_generate = time.time()
     send_daily_post(chat_id)
 
 
