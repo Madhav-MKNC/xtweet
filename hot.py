@@ -53,7 +53,7 @@ def summarize_with_openai(content):
     ]
     response = openai.ChatCompletion.create(
         messages = prompt,
-        model = "",
+        model = "gpt-3.5-turbo",
         temperature = 0.6,
     )
     print("[+] Summary completed!")

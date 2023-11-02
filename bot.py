@@ -46,6 +46,8 @@ def generate_options(options):
     # Create an inline keyboard with options
     markup = types.InlineKeyboardMarkup(row_width=1)
     for option in options:
+        if len(options) > 30:
+            option = option[:30] + "..."
         button = types.InlineKeyboardButton(option, callback_data=option)
         markup.add(button)
     return markup
