@@ -32,6 +32,10 @@ API_KEY = os.environ["BOT_API_KEY"]
 bot = telebot.TeleBot(API_KEY)
 bot_online = True
 
+# previous /new hit
+from time import time
+previous_generate = time()
+
 
 # save logs 
 def save_logs(message, command="/"):
@@ -184,6 +188,10 @@ def new(message):
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
+        return
+    
+    if time() - previous_generate > 100:
+        bot.reply_to(message, "Generating...")
         return
     
     bot.reply_to(message, "Generating... might take a minute")
