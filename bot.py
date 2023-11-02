@@ -190,12 +190,13 @@ def new(message):
     if chat_id not in users_chat_ids:
         return
     
-    if time() - previous_generate > 100:
+    if time() - previous_generate < 100:
         bot.reply_to(message, "Generating...")
         return
     
     bot.reply_to(message, "Generating... might take a minute")
     update_maal()
+    previous_generate = time()
     send_daily_post(chat_id)
 
 
