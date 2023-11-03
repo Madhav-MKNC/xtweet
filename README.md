@@ -12,12 +12,12 @@ Telegram bot for auto tweeting
 - /new            ==> update the maal
 - /edit           ==> make suggestions in the post content
 - /tweet          ==> tweet a manually edited post
-- <code>/auth           ==> authenticate twitter for posting tweets</code>
+- <code>/auth  ==> authenticate twitter for posting tweets</code>
 
 #### For admin users:
-- <code>/add_url        ==> add new articles url</code>
+- <code>/add_url  ==> add new articles url</code>
 - /remove         ==> remove a user
-- <code>/heyyy          ==> hot secret command</code>
+- <code>/heyyy  ==> hot secret command</code>
 
 ## TODO 
 
