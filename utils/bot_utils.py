@@ -21,10 +21,10 @@ def synthesize_maal():
     # for i in articles:
     #     maal[i['topic']] = i['content']
     maal = {
-        "0": 'lora',
-        "1": 'lauda',
-        "2": 'laura',
-        "3": 'loda'
+        "0": 'nanha lora',
+        "1": 'bada lauda',
+        "2": 'pyaara laura',
+        "3": 'chota loda'
     }
     return maal
 
@@ -41,8 +41,8 @@ def get_daily_post():
     titles = posts.keys()
     content = "What to post today?"
     for topic in posts:
-        content += "\n\n # " + topic
-        content += "\n" + posts[topic]
+        content += "\n---\n" + topic
+        content += "\n---\n" + posts[topic]
     return titles, content
 
 # Get selected post
