@@ -1,6 +1,7 @@
 # Registered users
 
 import json
+import os
 
 #  admin group
 ADMIN_CHAT_ID = -4041790014
@@ -19,6 +20,9 @@ def save_users(users_dict):
 
 # get users 
 def load_users():
+    if not os.path.exists("users.json"):
+        with open("users.json") as file:
+            file.write("{}")
     with open('users.json', 'r') as file:
         users_dict = json.load(file)
         users_dict = {int(k): v for k, v in users_dict.items()}
