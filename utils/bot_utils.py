@@ -3,7 +3,7 @@
 # author: Nishant Sharma (https://github.com/sevendaystoglory/)
 
 import openai
-from hot import get_maal, edit_tweet
+from utils.hot import get_maal, edit_tweet
 
 # env
 import os 
