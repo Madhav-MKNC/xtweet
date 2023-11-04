@@ -8,7 +8,7 @@ from telebot import types
 import threading
 import time
 
-from utils import (
+from utils.bot_utils import (
     get_daily_post,
     get_choice, 
     submit_post,
@@ -16,7 +16,7 @@ from utils import (
     update_maal
 )
 
-from users import (
+from utils.users import (
     users_chat_ids,
     admins_chat_ids, 
     ADMIN_CHAT_ID, 
