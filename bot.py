@@ -228,6 +228,7 @@ def new(message):
     if chat_id not in users_chat_ids:
         return
     
+    global previous_generate 
     if time.time() - previous_generate < 100:
         bot.reply_to(message, "Generating...")
         return
