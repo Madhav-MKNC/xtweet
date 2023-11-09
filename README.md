@@ -26,6 +26,5 @@ Telegram bot for auto tweeting
 - twitter posting
 - twitter authorization 
 - retweeting/reposting, replying (version 2)
-- add url by /add_url
 
 - change inline keyboard type

@@ -182,7 +182,7 @@ def start(message):
     chat_id = message.chat.id
     
     if chat_id in admins_chat_ids:
-        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets\n/remove USER_ID - For deleting a user"
+        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets\n/remove USER_ID - For deleting a user\n/add_url URL1 URL2 - For updating store"
 
     else:
         INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets"
