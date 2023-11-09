@@ -16,6 +16,7 @@ load_dotenv()
 
 # Initialize OpenAI
 openai.api_key = os.environ["OPENAI_API_KEY"]
+MODEL = "gpt-3.5-turbo"
 
 
 # get urls for the articles from the articles-base-url
@@ -53,7 +54,7 @@ def summarize_with_openai(content):
     ]
     response = openai.ChatCompletion.create(
         messages = prompt,
-        model = "gpt-3.5-turbo",
+        model = MODEL,
         temperature = 0.6,
     )
     print("[+] Summary completed!")
@@ -62,13 +63,21 @@ def summarize_with_openai(content):
 # make title for the tweet
 def make_title_with_openai(tweet):
     print("[*] Making title with OpenAI...")
-    prompt = f"You will be given the content of a tweet. Frame a title in less than 6-7 words. Respond only with the title and nothing else. I will now proceed to give you the content of the tweet: \n\n{tweet}"
-    response = openai.Completion.create(
-        engine = "gpt-3.5-turbo-instruct",
-        prompt = prompt,
-        max_tokens = 150
+    prompt = [
+        {
+            "role": "system",
+            "content": "You are an AI trained to create concise titles for tweets."
+        },
+        {
+            "role": "user",
+            "content": f"The following is the content of a tweet. Please provide a concise title for it in less than 6-7 words. The tweet is: \n\n{tweet}\n\nCan you suggest a suitable title?"}
+    ]
+    response = openai.ChatCompletion.create(
+        model = MODEL, 
+        messages = prompt,
+        max_tokens = 60
     )
-    title = response.choices[0].text.strip()
+    title = response['choices'][0]['message']['content'].strip()
     print(f"[+] Title: {title}")
     return title
 
@@ -87,7 +96,7 @@ def compare_tweets(tweets, prev_tweet):
     ]
     response = openai.ChatCompletion.create(
         messages = prompt,
-        model = "gpt-3.5-turbo",
+        model = MODEL,
         temperature = 0.2,
     )
     summary = response.choices[0]['message']['content']
@@ -109,7 +118,7 @@ def edit_tweet(suggestion="", tweet=""):
 
     response = openai.ChatCompletion.create(
         messages = prompt,
-        model = "gpt-3.5-turbo",
+        model = MODEL,
         temperature = 0.3,
     )
 

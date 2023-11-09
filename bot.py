@@ -9,11 +9,12 @@ import threading
 import time
 
 from utils.bot_utils import (
-    get_daily_post,
-    get_choice, 
+    get_daily_post, 
     submit_post,
     randi_rona,
-    update_maal
+    update_maal,
+    write_articles_urls,
+    read_articles_urls
 )
 
 from utils.users import (
@@ -167,7 +168,7 @@ For registered users:
 
 For admin users:
 /remove         ==> remove a user
-# /add_url        ==> add new articles url
+/add_url        ==> add new articles url
 # /heyyy          ==> hot secret command
 """
 
@@ -294,15 +295,21 @@ def tweet(message):
 #     bot.reply_to(message, "[feature under construction]")
 
 
-# # add new url for articles (ADMIN USERS)
-# @bot.message_handler(commands=["add_url"])
-# def add_url(message):
-#     chat_id = message.chat.id
+# add new url for articles (ADMIN USERS)
+@bot.message_handler(commands=["add_url"])
+def add_url(message):
+    chat_id = message.chat.id
+    text = message.text[8:].strip()
 
-#     if chat_id not in admins_chat_ids:
-#         return 
+    if not text or chat_id not in admins_chat_ids:
+        return 
     
-#     bot.reply_to(message, "add url!")
+    urls = text.split()
+    articles_urls = read_articles_urls()
+    articles_urls.extend(urls)
+    write_articles_urls(articles_urls)
+
+    bot.reply_to(message, "articles urls updated!")
 
 
 # remove a registered user (ADMIN USERS)
@@ -343,7 +350,7 @@ def schedule_daily_post():
         if current_time.tm_hour == 12 or current_time.tm_hour == 0:
             update_maal()
             send_all()
-        time.sleep(600)  # Check every 10 minutes
+        time.sleep(1800)  # Check every 30 minutes
 
 
 # main
