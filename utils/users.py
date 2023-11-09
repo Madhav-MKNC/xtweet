@@ -15,15 +15,15 @@ admins_chat_ids = [
 
 # save data locally
 def save_users(users_dict):
-    with open('users.json', 'w') as file:
+    with open('.users.json', 'w') as file:
         json.dump(users_dict, file)
 
 # get users 
 def load_users():
-    if not os.path.exists("users.json"):
-        with open("users.json") as file:
+    if not os.path.exists(".users.json"):
+        with open(".users.json") as file:
             file.write("{}")
-    with open('users.json', 'r') as file:
+    with open('.users.json', 'r') as file:
         users_dict = json.load(file)
         users_dict = {int(k): v for k, v in users_dict.items()}
     return users_dict

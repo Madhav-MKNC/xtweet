@@ -15,7 +15,7 @@ Telegram bot for auto tweeting
 - <code>/auth  ==> authenticate twitter for posting tweets</code>
 
 #### For admin users:
-- <code>/add_url  ==> add new articles url</code>
+- /add_url  ==> add new articles url
 - /remove         ==> remove a user
 - <code>/heyyy  ==> hot secret command</code>
 
