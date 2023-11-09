@@ -38,12 +38,12 @@ def synthesize_maal():
                 maal[i['topic']] = i['content']
         except Exception as e:
             print(f"[ERROR Fetching {url}]", str(e))
-    maal = {
-        "0": 'nanha lora',
-        "1": 'bada lauda',
-        "2": 'pyaara laura',
-        "3": 'chota loda'
-    }
+    # maal = {
+    #     "0": 'nanha lora',
+    #     "1": 'bada lauda',
+    #     "2": 'pyaara laura',
+    #     "3": 'chota loda'
+    # }
     return maal
 
 # daily posts
