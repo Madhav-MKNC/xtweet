@@ -25,7 +25,10 @@ def read_articles_urls():
         return urls
     with open('.articles_store.json', 'r') as file:
         urls = json.load(file)
-        return urls
+        if not urls:
+            urls = ["https://www.artificialintelligence-news.com/"]
+            write_articles_urls(urls)
+            return urls
 
 # get maal
 def synthesize_maal():
