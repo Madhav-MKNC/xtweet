@@ -83,7 +83,7 @@ def randi_rona(text="", khabar_content=""):
 def submit_post(content):
     try:
         # tweet it
-        return f"Tweeted successfully!\n\n{content}"
+        return f"Tweeted successfully!"
     except Exception as e:
         return f"Some error occurred please select again.\nError: {e}"
     
