@@ -29,7 +29,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # previous /new hit
-previous_generate = time.time()
+previous_generate = 0 - time.time()
 
 # bot init
 API_KEY = os.environ["BOT_API_KEY"]
@@ -239,7 +239,6 @@ def new(message):
     
     global previous_generate 
     if time.time() - previous_generate < 100:
-        previous_generate = time.time()
         bot.reply_to(message, "Generating...")
         return
     

@@ -20,4 +20,4 @@ def read_articles_urls():
         if not urls:
             urls = ["https://www.artificialintelligence-news.com/"]
             write_articles_urls(urls)
-            return urls
+        return urls
