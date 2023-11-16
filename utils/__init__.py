@@ -1,5 +1,8 @@
 # Utilities / helper stuff
 
+import os
+import json
+
 # update articles list
 def write_articles_urls(updated_list):
     updated_list = list(set(updated_list))
