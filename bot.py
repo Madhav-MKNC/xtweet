@@ -173,6 +173,9 @@ For admin users:
 """
 
 
+############ GENERAL ############
+
+
 # hello (general users)
 @bot.message_handler(commands=["start", "hello", "hi", "help"])
 def start(message):
@@ -196,6 +199,7 @@ def login(message):
     user_id = message.from_user.id
 
     if user_id in users_chat_ids:
+        bot.reply_to(message, "You are registered.")
         return 
 
     user_username = message.from_user.username
@@ -210,12 +214,16 @@ def login(message):
         bot.send_message(admin, next_message, reply_markup=markup)
 
 
+############ REGISTERED ############
+
+
 # get (REGISTERED USERS)
 @bot.message_handler(commands=["get"])
 def get(message):
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
+        bot.reply_to(message, "You are not registered! please /login")
         return
     
     send_daily_post(chat_id)
@@ -227,6 +235,7 @@ def new(message):
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
+        bot.reply_to(message, "You are not registered! please /login")
         return
     
     global previous_generate 
@@ -249,7 +258,11 @@ def edit(message):
     global users_chat_ids
     khabar_content = users_chat_ids[chat_id]['khabar']['content']
 
-    if not text or chat_id not in users_chat_ids:
+    if not text:
+        return
+
+    if chat_id not in users_chat_ids:
+        bot.reply_to(message, "You are not registered! please /login")
         return 
 
     khabar_content = randi_rona(text=text, khabar_content=khabar_content)
@@ -271,7 +284,11 @@ def tweet(message):
 
     global users_chat_ids
 
-    if not text or chat_id not in users_chat_ids:
+    if not text:
+        return
+
+    if chat_id not in users_chat_ids:
+        bot.reply_to(message, "You are not registered! please /login")
         return
     
     users_chat_ids[chat_id]['khabar']['content'] = text
@@ -289,10 +306,17 @@ def tweet(message):
 #     chat_id = message.chat.id
 #     text = message.text[5:].strip()
 
-#     if not text or chat_id not in users_chat_ids:
+#     if not text:
+#         return
+
+#     if chat_id not in users_chat_ids:
+#         bot.reply_to(message, "You are not registered! please /login")
 #         return
     
 #     bot.reply_to(message, "[feature under construction]")
+
+
+############ ADMIN ############
 
 
 # add new url for articles (ADMIN USERS)
