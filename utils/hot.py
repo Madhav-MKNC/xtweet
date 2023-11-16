@@ -18,17 +18,28 @@ load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
 MODEL = "gpt-3.5-turbo"
 
+# no. of tweets to be displayed
+MAX_ARTICLES = 5
+
 
 # get urls for the articles from the articles-base-url
-def get_articles_from_url(url):
-    print(f"[*] Fetching articles from {url}...")
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    article_elements = soup.find_all('article')
-    articles = [{
+def get_articles_from_urls(urls=[]):
+    if not urls:
+        print("[-] No articles to crawl.")
+        return []
+    
+    articles = []
+    for url in urls:
+        print(f"[*] Fetching articles from {url}...")
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        article_elements = soup.find_all('article')
+        this_articles = [{
         'link': article.a['href'],
         'title': article.text.strip()
-    } for article in article_elements]
+        } for article in article_elements]
+        articles.extend(this_articles)
+    
     return articles
 
 # scrape webpage
@@ -45,7 +56,7 @@ def summarize_with_openai(content):
     prompt = [
         {
             'role' : 'system',
-            'content' : "You will be given a certain scraped content. Don't worry, the creator has been asked for permission. You are to rephrase the content and write an interesting tweet about it from the perspective of a cool person who is also very intelligent and excited about new stuff. The person (he) will critique on the content wherever his opinions tell him to. So you are to make a tweet from his perspective. You can make it long or short depending on the level on interest or the mood of the person you are inpersonating. Give only the tweet as the response and nothing else. Make sure it looks like a real tweet!"
+            'content' : "You will be given a certain scraped content. Don't worry, the creator has been asked for permission. You are to rephrase the content and write an interesting tweet about it from the perspective of a cool person who is also very intelligent and excited about new stuff. The person (he) will critique on the content wherever his opinions tell him to. So you are to make a tweet from his perspective. You can make it long or short depending on the level on interest or the mood of the person you are impersonating. Give only the tweet as the response and nothing else. Make sure it looks like a real tweet and doesn't exceed the words limit which is 280 characters so make it short. Also, don't put any emojis or pictures in the tweet or any other extra characters."
         },
         {
             'role' : 'user', 
@@ -70,7 +81,7 @@ def make_title_with_openai(tweet):
         },
         {
             "role": "user",
-            "content": f"The following is the content of a tweet. Please provide a concise title for it in less than 6-7 words. The tweet is: \n\n{tweet}\n\nCan you suggest a suitable title?"}
+            "content": f"The following is the content of a tweet. Please provide a concise title for it in less than 6-7 words. The tweet is: \n\n{tweet}\n\nCan you suggest a suitable title? Just output the title with no other extra characters."}
     ]
     response = openai.ChatCompletion.create(
         model = MODEL, 
@@ -127,30 +138,32 @@ def edit_tweet(suggestion="", tweet=""):
 
 
 # main
-def get_maal(base_url):
-    articles = get_articles_from_url(base_url)
+def get_maal(base_urls=[]):
+    articles = get_articles_from_urls(urls=base_urls)
     
     if not articles:
         print("[-] No articles found.")
         exit()
 
-    MAX_ARTICLES = 5
     if len(articles) > MAX_ARTICLES:
         articles = random.sample(articles, MAX_ARTICLES)
     
     maal = []
     try:
         for i, article in enumerate(articles):
-            url = article.get("link")
-            print(f'[{i+1}] {url}')
-            content = scrape_content(url)
-            tweet = summarize_with_openai(content)
-            title = make_title_with_openai(tweet)
-            
-            maal.append({
-                'topic': title,
-                'content': tweet
-            })
+            try:
+                url = article.get("link")
+                print(f'[{i+1}] {url}')
+                content = scrape_content(url)
+                tweet = summarize_with_openai(content)
+                title = make_title_with_openai(tweet)
+                
+                maal.append({
+                    'topic': title,
+                    'content': tweet
+                })
+            except Exception as errr:
+                print(f"[ERROR Fetching {url}]", str(errr))
     except KeyboardInterrupt: 
         print("closing...")
     except Exception as e:
