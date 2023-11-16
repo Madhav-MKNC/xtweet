@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # author: Madhav Kumar (https://github.com/madhav-mknc/)
-# author: Nishant Sharma (https://github.com/sevendaystoglory/)
 
 import telebot
 from telebot import types
@@ -240,6 +239,7 @@ def new(message):
     
     global previous_generate 
     if time.time() - previous_generate < 100:
+        previous_generate = time.time()
         bot.reply_to(message, "Generating...")
         return
     
