@@ -49,8 +49,8 @@ def generate_options(options):
     # Create an inline keyboard with options
     markup = types.InlineKeyboardMarkup(row_width=1)
     for option in options:
-        if len(options) > 30:
-            option = option[:30] + "..."
+        if len(options) > 22:
+            option = option[:22] + "..."
         button = types.InlineKeyboardButton(option, callback_data=option)
         markup.add(button)
     return markup
@@ -139,7 +139,7 @@ def handle_choice(call):
         # khabar_content = get_choice(khabar_title)
 
         khabar_title = choice
-        khabars = message.text.split('\n---\n')
+        khabars = message.text.split('\n--------------------\n')
         khabar_content = khabars[khabars.index(khabar_title) + 1]
 
         # update the new global khabar for the user
