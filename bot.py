@@ -38,6 +38,10 @@ bot = telebot.TeleBot(API_KEY)
 bot_online = True
 
 
+"""
+UTILITIES
+"""
+
 # save logs 
 def save_logs(message, command="/"):
     if not os.path.exists('tmp'): os.makedirs('tmp')
@@ -70,6 +74,10 @@ def send_all():
     for chat_id in users_chat_ids:
         send_daily_post(chat_id)
 
+
+"""
+CHOICE HANDLER
+"""
 
 # Function to handle user choices
 @bot.callback_query_handler(func=lambda call: True)
@@ -196,6 +204,9 @@ def start(message):
 # login (GENERAL USERS)
 @bot.message_handler(commands=["login"])
 def login(message):
+    # save logs
+    save_logs(message, command="/start")
+
     user_id = message.from_user.id
 
     if user_id in users_chat_ids:
@@ -220,6 +231,9 @@ def login(message):
 # get (REGISTERED USERS)
 @bot.message_handler(commands=["get"])
 def get(message):
+    # save logs
+    save_logs(message, command="/start")
+
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
@@ -232,6 +246,9 @@ def get(message):
 # new (REGISTERED USERS)
 @bot.message_handler(commands=["new"])
 def new(message):
+    # save logs
+    save_logs(message, command="/start")
+
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
@@ -266,6 +283,9 @@ def new(message):
 # edit (REGISTERED USERS)
 @bot.message_handler(commands=["edit"])
 def edit(message):
+    # save logs
+    save_logs(message, command="/start")
+
     chat_id = message.chat.id
     text = message.text[5:].strip()
 
@@ -293,6 +313,9 @@ def edit(message):
 # tweet (REGISTERED USERS)
 @bot.message_handler(commands=["tweet"])
 def tweet(message):
+    # save logs
+    save_logs(message, command="/start")
+
     chat_id = message.chat.id
     text = message.text[6:].strip()
 
@@ -317,6 +340,9 @@ def tweet(message):
 # # authenticate twitter (REGISTERED USERS)
 # @bot.message_handler(commands=["auth"])
 # def auth(message):
+#     # save logs
+#     save_logs(message, command="/start")
+
 #     chat_id = message.chat.id
 #     text = message.text[5:].strip()
 
@@ -336,6 +362,9 @@ def tweet(message):
 # add new url for articles (ADMIN USERS)
 @bot.message_handler(commands=["add_url"])
 def add_url(message):
+    # save logs
+    save_logs(message, command="/start")
+
     chat_id = message.chat.id
     text = message.text[8:].strip()
 
@@ -353,6 +382,9 @@ def add_url(message):
 # remove a registered user (ADMIN USERS)
 @bot.message_handler(commands=["remove"])
 def remove(message):
+    # save logs
+    save_logs(message, command="/start")
+
     chat_id = message.chat.id
     text = message.text[7:].strip() # this should be user id of the user to be deleted
 
@@ -373,9 +405,12 @@ def remove(message):
 # heyyy (ADMIN USERS)
 @bot.message_handler(commands=["heyyy"])
 def heyyy(message):
+    # # save logs
+    # save_logs(message, command="/start")
+
     chat_id = message.chat.id
 
-    if chat_id not in admins_chat_ids[0:1]:
+    if chat_id not in admins_chat_ids:
         return 
     
     bot.reply_to(message, "heyyy!")
