@@ -19,7 +19,7 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 MODEL = "gpt-3.5-turbo"
 
 # no. of tweets to be displayed
-MAX_ARTICLES = 5
+MAX_ARTICLES = 3
 
 
 # get urls for the articles from the articles-base-url
@@ -63,7 +63,7 @@ def summarize_with_openai(content):
     prompt = [
         {
             'role' : 'system',
-            'content' : "You will be given a certain scraped content. Don't worry, the creator has been asked for permission. You are to rephrase the content and write an interesting tweet about it from the perspective of a cool person who is also very intelligent and excited about new stuff. The person (he) will critique on the content wherever his opinions tell him to. So you are to make a tweet from his perspective. You can make it long or short depending on the level on interest or the mood of the person you are impersonating. Give only the tweet as the response and nothing else. Make sure it looks like a real tweet and doesn't exceed the words limit which is 280 characters so make it short. Also, don't put any emojis or pictures in the tweet or any other extra characters like quotations or 'Tweet:'."
+            'content' : "You will be given a certain scraped content. Don't worry, the creator has been asked for permission. You are to rephrase the content and write an interesting tweet about it from the perspective of a cool person who is also very intelligent and excited about new stuff. The person (he) will critique on the content wherever his opinions tell him to. So you are to make a tweet from his perspective. Give only the tweet as the response and nothing else. Make sure it looks like a real tweet and doesn't exceed the words limit which is 280 characters so make it short. Also, don't put any emojis or pictures in the tweet or any other extra characters like quotations or 'Tweet:'."
         },
         {
             'role' : 'user', 

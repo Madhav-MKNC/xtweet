@@ -406,6 +406,10 @@ def heyyy(message):
         return 
     
     bot.reply_to(message, "heyyy!")
+
+    if not os.path.exists('tmp/logs.txt'):
+        with open('tmp/logs.txt', 'a') as file:
+            file.write("")
     
     try:
         with open('tmp/logs.txt', 'r') as file:
