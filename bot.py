@@ -152,7 +152,7 @@ def handle_choice(call):
             users_chat_ids[chat_id]['khabar']['title'] = khabar_title
             users_chat_ids[chat_id]['khabar']['content'] = khabar_content
 
-            next_message = "You have selected:\n# " + khabar_title + "\n" + "`" + khabar_content + "`"
+            next_message = "You have selected:\nTitle: " + khabar_title + "\nTweet: " + "`" + khabar_content + "`"
             options = ["Edit", "Submit"]
             markup = generate_options(options)
 
@@ -331,7 +331,7 @@ def tweet(message):
     
     users_chat_ids[chat_id]['khabar']['content'] = text
 
-    next_message = "You have selected:\n" + text
+    next_message = "You have selected:\nTweet: " + "`" + text + "`"
     options = ["Edit", "Submit"]
     markup = generate_options(options)
 
