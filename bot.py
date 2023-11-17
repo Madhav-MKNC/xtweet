@@ -431,6 +431,19 @@ def heyyy(message):
         bot.send_document(message.chat.id, doc)
         print('[error] /heyyy :', str(err))
 
+# setting the bot commands for menu bar
+def set_commands():
+    commands = [
+        telebot.types.BotCommand("/start", "Start the conversatoin"),
+        telebot.types.BotCommand("/login", "For access"),
+        telebot.types.BotCommand("/tweet", "For manually written tweets"),
+        telebot.types.BotCommand("/get", "For generating hot tweets"),
+        telebot.types.BotCommand("/new", "For updating hot tweets"),
+    ]
+    bot.set_my_commands(commands)
+
+# Pre-initialize your bot commands
+set_commands()
 
 # Function to start the daily post at 12:00 and 00:00
 def schedule_daily_post():
