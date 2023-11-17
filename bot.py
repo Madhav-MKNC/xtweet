@@ -43,8 +43,11 @@ UTILITIES
 """
 
 # save logs 
-def save_logs(message, command="/"):
-    if not os.path.exists('tmp'): os.makedirs('tmp')
+def save_logs(message):
+    if not os.path.exists('tmp'):
+        os.makedirs('tmp')
+
+    command = message.split()[0]
     with open('tmp/logs.txt', 'a') as file:
         logs = f"\n[{command}] FROM: ({message.from_user.username}, {message.from_user.first_name} {message.from_user.last_name}, {message.from_user.id}) ON: ({message.chat.title}, {message.chat.username}, {message.chat.first_name} {message.chat.last_name}, {message.chat.id})\n"
         file.write(logs)
@@ -188,7 +191,7 @@ For admin users:
 @bot.message_handler(commands=["start", "hello", "hi", "help"])
 def start(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     chat_id = message.chat.id
     
@@ -205,7 +208,7 @@ def start(message):
 @bot.message_handler(commands=["login"])
 def login(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     user_id = message.from_user.id
 
@@ -232,7 +235,7 @@ def login(message):
 @bot.message_handler(commands=["get"])
 def get(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     chat_id = message.chat.id
 
@@ -247,7 +250,7 @@ def get(message):
 @bot.message_handler(commands=["new"])
 def new(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     chat_id = message.chat.id
 
@@ -284,7 +287,7 @@ def new(message):
 @bot.message_handler(commands=["edit"])
 def edit(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     chat_id = message.chat.id
     text = message.text[5:].strip()
@@ -314,7 +317,7 @@ def edit(message):
 @bot.message_handler(commands=["tweet"])
 def tweet(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     chat_id = message.chat.id
     text = message.text[6:].strip()
@@ -341,7 +344,7 @@ def tweet(message):
 # @bot.message_handler(commands=["auth"])
 # def auth(message):
 #     # save logs
-#     save_logs(message, command="/start")
+#     save_logs(message)
 
 #     chat_id = message.chat.id
 #     text = message.text[5:].strip()
@@ -363,7 +366,7 @@ def tweet(message):
 @bot.message_handler(commands=["add_url"])
 def add_url(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     chat_id = message.chat.id
     text = message.text[8:].strip()
@@ -383,7 +386,7 @@ def add_url(message):
 @bot.message_handler(commands=["remove"])
 def remove(message):
     # save logs
-    save_logs(message, command="/start")
+    save_logs(message)
 
     chat_id = message.chat.id
     text = message.text[7:].strip() # this should be user id of the user to be deleted
@@ -406,7 +409,7 @@ def remove(message):
 @bot.message_handler(commands=["heyyy"])
 def heyyy(message):
     # # save logs
-    # save_logs(message, command="/start")
+    # save_logs(message)
 
     chat_id = message.chat.id
 
