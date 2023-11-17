@@ -21,6 +21,8 @@ Telegram bot for auto tweeting
 
 ## TODO 
 
+- TRY-CATCH in bot.send_message
+
 - admins commands from admins server group
 - Use langchain for url summarizing (version 3)
 - twitter posting

@@ -237,14 +237,14 @@ def new(message):
         bot.reply_to(message, "You are not registered! please /login")
         return
     
-    global previous_generate 
+    global previous_generate
     if time.time() - previous_generate < 100:
-        bot.reply_to(message, "Generating...")
+        send_daily_post(chat_id)
         return
-    
+
+    previous_generate = time.time()
     bot.reply_to(message, "Generating... might take a minute")
     update_maal()
-    previous_generate = time.time()
     send_daily_post(chat_id)
 
 
