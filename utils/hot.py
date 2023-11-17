@@ -51,7 +51,7 @@ def get_articles_from_urls(urls=[]):
 
 # scrape webpage
 def scrape_content(url):
-    print(f"[*] Scraping content from URL: {url}")
+    print(f"|- Scraping content from URL: {url}")
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     paragraphs = soup.find_all('p')
@@ -59,7 +59,7 @@ def scrape_content(url):
 
 # summarize the content and convert into a tweet
 def summarize_with_openai(content):
-    print("[*] Summarizing content with OpenAI...")
+    print("|- Summarizing content with OpenAI...")
     prompt = [
         {
             'role' : 'system',
@@ -75,12 +75,12 @@ def summarize_with_openai(content):
         model = MODEL,
         temperature = 0.6,
     )
-    print("[+] Summary completed!")
+    print("|- Summary completed!")
     return response.choices[0]['message']['content']
 
 # make title for the tweet
 def make_title_with_openai(tweet):
-    print("[*] Making title with OpenAI...")
+    print("|- Making title with OpenAI...")
     prompt = [
         {
             "role": "system",
@@ -96,12 +96,12 @@ def make_title_with_openai(tweet):
         max_tokens = 60
     )
     title = response['choices'][0]['message']['content'].strip()
-    print(f"[+] Title: {title}")
+    print(f"|- Title: {title}")
     return title
 
 # compare two tweets for the better one
 def compare_tweets(tweets, prev_tweet):
-    print("Starting comparison with OpenAI...")
+    print("[*] Starting comparison with OpenAI...")
     prompt = [
         {
             'role' : 'system',
@@ -160,7 +160,7 @@ def get_maal(base_urls=[]):
         for i, article in enumerate(articles):
             try:
                 url = article.get("link")
-                print(f'[{i+1}] {url}')
+                print(f'[{i+1}]')
                 content = scrape_content(url)
                 tweet = summarize_with_openai(content)
                 title = make_title_with_openai(tweet)

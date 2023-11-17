@@ -32,13 +32,14 @@ def write_articles_urls(updated_list):
 
 # list of articles
 def read_articles_urls():
+    DEFAULT_URL = "https://www.livemint.com/ai"
     if not os.path.exists('.articles_store.json'):
-        urls = ["https://www.artificialintelligence-news.com/"]
+        urls = [DEFAULT_URL]
         write_articles_urls(urls)
         return urls
     with open('.articles_store.json', 'r') as file:
         urls = json.load(file)
         if not urls:
-            urls = ["https://www.artificialintelligence-news.com/"]
+            urls = [DEFAULT_URL]
             write_articles_urls(urls)
         return urls
