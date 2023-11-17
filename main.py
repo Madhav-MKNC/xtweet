@@ -1,3 +1,5 @@
+# main => repl.iter
+
 from bot import go_online
 from keep_alive import keep_alive
 
