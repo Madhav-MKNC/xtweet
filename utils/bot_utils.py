@@ -19,10 +19,10 @@ def synthesize_maal():
     for i in articles:
         maal[i['topic']] = i['content']
     # maal = {
-    #     "0": 'nanha lora',
-    #     "1": 'bada lauda',
-    #     "2": 'pyaara laura',
-    #     "3": 'chota loda'
+    #     "0": 'nanha ',
+    #     "1": 'bada ',
+    #     "2": 'pyaara ',
+    #     "3": 'chota '
     # }
     return maal
 
