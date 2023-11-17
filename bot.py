@@ -240,6 +240,7 @@ def new(message):
     global previous_generate
     if time.time() - previous_generate < 100:
         send_daily_post(chat_id)
+        bot.reply_to(message, "Please wait for the new content.")
         return
 
     previous_generate = time.time()
