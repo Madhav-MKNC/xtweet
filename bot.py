@@ -412,7 +412,10 @@ def heyyy(message):
             logs = file.read().strip()
         bot.send_message(chat_id, logs)
     except Exception as err:
-        bot.send_message(chat_id, "LOGS too long!")
+        bot.send_message(chat_id, "LOGS too long!\nview here: https://xtweet.gamhcrew.repl.co/logs\nor view the file below.")
+        # send logs.txt
+        doc = open('tmp/logs.txt', 'rb')
+        bot.send_document(message.chat.id, doc)
         print('[error] /heyyy :', str(err))
 
 
