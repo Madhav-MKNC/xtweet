@@ -8,6 +8,8 @@ import threading
 import time
 import random
 
+from utils import save_logs
+
 from utils.bot_utils import (
     get_daily_post, 
     submit_post,
@@ -42,17 +44,6 @@ bot_online = True
 UTILITIES
 """
 
-# save logs 
-def save_logs(message):
-    if not os.path.exists('tmp'):
-        os.makedirs('tmp')
-
-    command = message.split()[0]
-    with open('tmp/logs.txt', 'a') as file:
-        logs = f"\n[{command}] FROM: ({message.from_user.username}, {message.from_user.first_name} {message.from_user.last_name}, {message.from_user.id}) ON: ({message.chat.title}, {message.chat.username}, {message.chat.first_name} {message.chat.last_name}, {message.chat.id})\n"
-        file.write(logs)
-
-
 # Generate options
 def generate_options(options):
     # Create an inline keyboard with options
@@ -64,13 +55,11 @@ def generate_options(options):
         markup.add(button)
     return markup
 
-
 # Function to send the daily post
 def send_daily_post(chat_id):
     options, daily_post = get_daily_post()
     markup = generate_options(options)
     bot.send_message(chat_id, daily_post, reply_markup=markup)
-
 
 # Send all the registered users
 def send_all():
