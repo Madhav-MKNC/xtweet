@@ -168,7 +168,7 @@ For registered users:
 For admin users:
 /remove         ==> remove a user
 /add_url        ==> add new articles url
-# /heyyy          ==> hot secret command
+/heyyy          ==> display logs
 """
 
 
@@ -184,7 +184,7 @@ def start(message):
     chat_id = message.chat.id
     
     if chat_id in admins_chat_ids:
-        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets\n/remove USER_ID - For deleting a user\n/add_url URL1 URL2 - For updating store"
+        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets\n/remove USER_ID - For deleting a user\n/add_url URL1 URL2 - For updating store\n/heyyy - Display logs"
 
     else:
         INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets"
@@ -324,7 +324,7 @@ def add_url(message):
     chat_id = message.chat.id
     text = message.text[8:].strip()
 
-    if not text or chat_id not in admins_chat_ids:
+    if not text or chat_id not in admins_chat_ids[0:1]:
         return 
     
     urls = text.split()
@@ -355,15 +355,23 @@ def remove(message):
         bot.reply_to(message, f"Some error while deleting a user, error: {e}")
 
     
-# # heyyy (ADMIN USERS)
-# @bot.message_handler(commands=["heyyy"])
-# def heyyy(message):
-#     chat_id = message.chat.id
+# heyyy (ADMIN USERS)
+@bot.message_handler(commands=["heyyy"])
+def heyyy(message):
+    chat_id = message.chat.id
 
-#     if chat_id not in admins_chat_ids:
-#         return 
+    if chat_id not in admins_chat_ids[0:1]:
+        return 
     
-#     bot.reply_to(message, "heyyy!")
+    bot.reply_to(message, "heyyy!")
+    
+    try:
+        with open('tmp/logs.txt', 'r') as file:
+            logs = file.read().strip()
+        bot.send_message(chat_id, logs)
+    except Exception as err:
+        bot.send_message(chat_id, "LOGS too long!")
+        print('[error] /heyyy :', str(err))
 
 
 # Function to start the daily post at 12:00 and 00:00
