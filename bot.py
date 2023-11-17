@@ -6,6 +6,7 @@ from telebot import types
 
 import threading
 import time
+import random
 
 from utils.bot_utils import (
     get_daily_post, 
@@ -239,8 +240,21 @@ def new(message):
     
     global previous_generate
     if time.time() - previous_generate < 100:
-        send_daily_post(chat_id)
-        bot.reply_to(message, "Please wait for the new content.")
+        send_daily_post(chat_id) 
+        update_messages = [
+            "Please wait for the new content to be available.",
+            "While we are updating the content, your patience is appreciated.",
+            "Still updating, thank you for your patience.",
+            "Content refresh in progress, please stand by.",
+            "Updates underway, we request your patience.",
+            "Currently enhancing our content, your patience is valued.",
+            "New content coming soon, please hold on.",
+            "We're working on bringing you fresh content, please wait.",
+            "Content update in process, thank you for waiting.",
+            "Patience appreciated as we update our content for you."
+        ]
+        reply = random.choice(update_messages)
+        bot.reply_to(message, reply)
         return
 
     previous_generate = time.time()
