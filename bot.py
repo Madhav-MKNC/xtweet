@@ -64,8 +64,8 @@ def send_daily_post(chat_id):
         markup = generate_options(options)
         bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
     except Exception as err:
-        print("[error]", str(err))
-        print("options:", options)
+        print("\033[31m" + '[error]', str(err) + "\033[m")
+        print("\033[93m" + "options:", options + "\033[m")
         options = list(map(str, list(range(1, Narticles + 1)))) # remove this before main deployment
         markup = generate_options(options)
         bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
@@ -162,7 +162,7 @@ def handle_choice(call):
 
             bot.send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
         except Exception as err:
-            print('[error]', str(err))
+            print("\033[31m" + '[error]', str(err) + "\033[m")
             bot.send_message(chat_id, "Invalid action!")
 
 
@@ -417,7 +417,7 @@ def remove(message):
         user_id = int(text)
         users_chat_ids.pop(user_id)
         save_users(users_chat_ids)
-        bot.reply_to(message, f"Deleted user_id:{user_id}")
+        bot.reply_to(message, f"Deleted user_id: {user_id}")
         bot.send_message(user_id, "Your access has been terminated!")
     except Exception as e:
         bot.reply_to(message, f"Some error while deleting a user, error: {e}")
@@ -449,7 +449,7 @@ def heyyy(message):
         # send logs.txt
         doc = open('tmp/logs.txt', 'rb')
         bot.send_document(message.chat.id, doc)
-        print('[error] /heyyy :', str(err))
+        # print("\033[31m" + '[error] /heyyy', str(err) + "\033[m")
 
 
 # Function to start the daily post at 12:00 and 00:00

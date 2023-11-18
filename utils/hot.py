@@ -50,8 +50,8 @@ def get_articles_from_urls(urls=[]):
                 'title': article.text.strip()
             } for article in article_elements]
             articles.extend(this_articles)
-        except Exception as eerr:
-            print('[error]', url, ':', str(eerr))
+        except Exception as err:
+            print("\033[31m" + '[error]', url, str(err) + "\033[m")
         
     return articles
 
@@ -183,12 +183,12 @@ def get_maal(base_urls=[]):
                     'topic': title,
                     'content': tweet
                 })
-            except Exception as errr:
-                print(f"[ERROR Fetching {url}]", str(errr))
+            except Exception as err:
+                print("\033[31m" + '[error] fetching', url, str(err) + "\033[m")
     except KeyboardInterrupt: 
         print("closing...")
     except Exception as e:
-        print("[!] Error occured:",str(e))
+        print("\033[93m" + '[!] Error occured:', str(err) + "\033[m")
 
     if not os.path.exists('tmp'): os.makedirs('tmp')
     with open('tmp/maal.json', 'w', encoding='utf-8') as file:
