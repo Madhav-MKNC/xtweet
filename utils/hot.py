@@ -19,7 +19,8 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 MODEL = "gpt-3.5-turbo"
 
 # no. of tweets to be displayed
-MAX_ARTICLES = 2
+MAX_ARTICLES = 5
+Narticles = MAX_ARTICLES
 
 # headers for get request
 HEADERS = {
@@ -160,9 +161,13 @@ def get_maal(base_urls=[]):
         exit()
 
     print("[+] Total articles:", len(articles))
-    if len(articles) > MAX_ARTICLES:
-        articles = random.sample(articles, MAX_ARTICLES)
-        print(f"[+] Scraping {MAX_ARTICLES} articles randomly..")
+
+    global Narticles
+    if len(articles) < MAX_ARTICLES:
+        Narticles = len(articles)
+
+    articles = random.sample(articles, Narticles)
+    print(f"[+] Scraping {MAX_ARTICLES} articles randomly..")
     
     maal = []
     try:

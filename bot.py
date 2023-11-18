@@ -9,6 +9,7 @@ import time
 import random
 
 from utils import save_logs
+from utils.hot import Narticles
 
 from utils.bot_utils import (
     get_daily_post,
@@ -17,7 +18,7 @@ from utils.bot_utils import (
     randi_rona,
     update_maal,
     write_articles_urls,
-    read_articles_urls
+    read_articles_urls,
 )
 
 from utils.users import (
@@ -61,10 +62,11 @@ def send_daily_post(chat_id):
     options, daily_post = get_daily_post()
     try:
         markup = generate_options(options)
+        bot.send_message(chat_id, daily_post, reply_markup=markup)
     except:
-        options = [1, 2, 3] # remove this before main deployment
+        options = list(map(str, list(range(1, Narticles + 1)))) # remove this before main deployment
         markup = generate_options(options)
-    bot.send_message(chat_id, daily_post, reply_markup=markup)
+        bot.send_message(chat_id, daily_post, reply_markup=markup)
 
 # Send all the registered users
 def send_all():
@@ -165,6 +167,7 @@ def handle_choice(call):
 # COMMANDS
 """
 For general users:
+/test           ==> temp command for testing/debugging
 /start          ==> entry point (other commands: /hello, /hi, /help)
 /login          ==> for bot access
 
@@ -183,6 +186,30 @@ For admin users:
 
 
 ############ GENERAL ############
+
+
+# temp testing/debugging (general users)
+@bot.message_handler(commands=["test"])
+def start(message):
+    # # save logs
+    # save_logs(message)
+    
+    new_message = """
+# title 1
+some content here
+
+# title 2
+## sub title
+- some content
+        -- some other elements
+        -- some other elements
+- some other content
+
+# title 3
+* some content
+    """
+
+    bot.send_message(message.chat.id, new_message, parse_mode="Markdown")
 
 
 # hello (general users)
