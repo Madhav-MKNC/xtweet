@@ -62,11 +62,13 @@ def send_daily_post(chat_id):
     options, daily_post = get_daily_post()
     try:
         markup = generate_options(options)
-        bot.send_message(chat_id, daily_post, reply_markup=markup)
-    except:
+        bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
+    except Exception as err:
+        print("[error]", str(err))
+        print("options:", options)
         options = list(map(str, list(range(1, Narticles + 1)))) # remove this before main deployment
         markup = generate_options(options)
-        bot.send_message(chat_id, daily_post, reply_markup=markup)
+        bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
 
 # Send all the registered users
 def send_all():
@@ -143,12 +145,12 @@ def handle_choice(call):
     # user ka hi maamla chal rha hai (post selection)
     else:
         try:
-            # khabar_title = choice
-            # khabar_content = get_choice(khabar_title)
-
             khabar_title = choice
-            khabars = message.text.split('\n--------------------\n')
-            khabar_content = khabars[khabars.index(khabar_title) + 1]
+            khabar_content = get_choice(khabar_title)
+
+            # khabar_title = choice
+            # khabars = message.text.split('\n--------------------\n')
+            # khabar_content = khabars[khabars.index(khabar_title) + 1]
 
             # update the new global khabar for the user
             users_chat_ids[chat_id]['khabar']['title'] = khabar_title
@@ -195,18 +197,7 @@ def start(message):
     # save_logs(message)
     
     new_message = """
-# title 1
-some content here
-
-# title 2
-## sub title
-- some content
-        -- some other elements
-        -- some other elements
-- some other content
-
-# title 3
-* some content
+```MKNC```
     """
 
     bot.send_message(message.chat.id, new_message, parse_mode="Markdown")

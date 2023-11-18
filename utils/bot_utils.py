@@ -37,10 +37,10 @@ def update_maal():
 # Get daily posts
 def get_daily_post():
     titles = posts.keys()
-    content = "What to post today?\n"
+    content = "What to post today?"
     for topic in posts:
-        content += "\n--------------------\n" + topic
-        content += "\n--------------------\n" + posts[topic]
+        content += "\n\nTitle: " + "**" + topic + "**"
+        content += "\n\nTweet: " + "`" + posts[topic] + "`"
     return titles, content
 
 # Get selected post
