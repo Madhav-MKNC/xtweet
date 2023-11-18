@@ -19,7 +19,12 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 MODEL = "gpt-3.5-turbo"
 
 # no. of tweets to be displayed
-MAX_ARTICLES = 3
+MAX_ARTICLES = 2
+
+# headers for get request
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+}
 
 
 # get urls for the articles from the articles-base-url
@@ -31,7 +36,7 @@ def get_articles_from_urls(urls=[]):
     articles = []
     for url in urls:
         print(f"[*] Fetching articles from {url}...")
-        response = requests.get(url)
+        response = requests.get(url, headers=HEADERS)
         soup = BeautifulSoup(response.text, 'html.parser')
 
         article_elements = soup.find_all('article')
@@ -52,10 +57,12 @@ def get_articles_from_urls(urls=[]):
 # scrape webpage
 def scrape_content(url):
     print(f"|- Scraping content from URL: {url}")
-    response = requests.get(url)
+    response = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(response.content, 'html.parser')
     paragraphs = soup.find_all('p')
-    return ' '.join([p.text for p in paragraphs])
+    content = ' '.join([p.text for p in paragraphs])
+    # print(content) # remove this after testing
+    return content
 
 # summarize the content and convert into a tweet
 def summarize_with_openai(content):
@@ -152,8 +159,10 @@ def get_maal(base_urls=[]):
         print("[-] No articles found.")
         exit()
 
+    print("[+] Total articles:", len(articles))
     if len(articles) > MAX_ARTICLES:
         articles = random.sample(articles, MAX_ARTICLES)
+        print(f"[+] Scraping {MAX_ARTICLES} articles randomly..")
     
     maal = []
     try:
@@ -185,7 +194,7 @@ def get_maal(base_urls=[]):
 
 
 if __name__ == "__main__":
-    base_url = "https://www.artificialintelligence-news.com/"
-    get_maal(base_url=base_url)
+    urls = ["https://vteam.ai/rss?gclid=Cj0KCQiAmNeqBhD4ARIsADsYfTcSCjl66YL8LGrvUoHZpbzjxrBXzXa5IaC9ZbydqH7Z-NE9zYYBWiIaAtKIEALw_wcBp"]
+    get_maal(urls)
 
 

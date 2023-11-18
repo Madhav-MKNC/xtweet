@@ -62,7 +62,7 @@ def send_daily_post(chat_id):
     try:
         markup = generate_options(options)
     except:
-        options = [1, 2, 3]
+        options = [1, 2, 3] # remove this before main deployment
         markup = generate_options(options)
     bot.send_message(chat_id, daily_post, reply_markup=markup)
 
@@ -156,7 +156,7 @@ def handle_choice(call):
             options = ["Edit", "Submit"]
             markup = generate_options(options)
 
-            bot.send_message(chat_id, next_message, reply_markup=markup)
+            bot.send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
         except Exception as err:
             print('[error]', str(err))
             bot.send_message(chat_id, "Invalid action!")
@@ -302,7 +302,9 @@ def edit(message):
 
     khabar_content = randi_rona(text=text, khabar_content=khabar_content)
     users_chat_ids[chat_id]['khabar']['content'] = khabar_content
-    bot.reply_to(message, khabar_content)
+
+    next_message = "Tweet: `" + khabar_content + "`"
+    bot.reply_to(message, next_message, parse_mode='Markdown')
 
     next_message = "Confirm?"
     options = ["Yes", "No"]
@@ -335,7 +337,7 @@ def tweet(message):
     options = ["Edit", "Submit"]
     markup = generate_options(options)
 
-    bot.send_message(chat_id, next_message, reply_markup=markup)
+    bot.send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
 
 
 # # authenticate twitter (REGISTERED USERS)
