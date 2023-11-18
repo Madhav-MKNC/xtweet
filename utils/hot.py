@@ -194,7 +194,7 @@ def get_maal(base_urls=[]):
 
 
 if __name__ == "__main__":
-    urls = ["https://vteam.ai/rss?gclid=Cj0KCQiAmNeqBhD4ARIsADsYfTcSCjl66YL8LGrvUoHZpbzjxrBXzXa5IaC9ZbydqH7Z-NE9zYYBWiIaAtKIEALw_wcBp"]
+    urls = ["https://vteam.ai/rss"]
     get_maal(urls)
 
 

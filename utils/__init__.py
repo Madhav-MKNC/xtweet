@@ -32,7 +32,7 @@ def write_articles_urls(updated_list):
 
 # list of articles
 def read_articles_urls():
-    DEFAULT_URL = "https://www.livemint.com/ai"
+    DEFAULT_URL = "https://vteam.ai/rss"
     if not os.path.exists('.articles_store.json'):
         urls = [DEFAULT_URL]
         write_articles_urls(urls)
