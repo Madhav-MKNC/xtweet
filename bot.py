@@ -60,12 +60,13 @@ def generate_options(options):
 # Function to send the daily post
 def send_daily_post(chat_id):
     options, daily_post = get_daily_post()
+    # print("\033[96m" + "options: " + str(options) + "\033[m")
     try:
-        markup = generate_options(options)
+        markup = generate_options(list(options))
         bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
     except Exception as err:
-        print("\033[31m" + '[error]', str(err) + "\033[m")
-        print("\033[93m" + "options:", options + "\033[m")
+        print("\033[31m" + '[error] ' + str(err) + "\033[m")
+        print("\033[93m" + "options: " + options + "\033[m")
         options = list(map(str, list(range(1, Narticles + 1)))) # remove this before main deployment
         markup = generate_options(options)
         bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
@@ -162,7 +163,7 @@ def handle_choice(call):
 
             bot.send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
         except Exception as err:
-            print("\033[31m" + '[error]', str(err) + "\033[m")
+            print("\033[31m" + '[error] ' + str(err) + "\033[m")
             bot.send_message(chat_id, "Invalid action!")
 
 
@@ -449,7 +450,7 @@ def heyyy(message):
         # send logs.txt
         doc = open('tmp/logs.txt', 'rb')
         bot.send_document(message.chat.id, doc)
-        # print("\033[31m" + '[error] /heyyy', str(err) + "\033[m")
+        # print("\033[31m" + '[error] /heyyy ' + str(err) + "\033[m")
 
 
 # Function to start the daily post at 12:00 and 00:00

@@ -36,7 +36,7 @@ def get_articles_from_urls(urls=[]):
     
     articles = []
     for url in urls:
-        print(f"[*] Fetching articles from {url}...")
+        print(f"[*] Fetching articles from {url}")
         response = requests.get(url, headers=HEADERS)
         soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -167,7 +167,7 @@ def get_maal(base_urls=[]):
         Narticles = len(articles)
 
     articles = random.sample(articles, Narticles)
-    print(f"[+] Scraping {MAX_ARTICLES} articles randomly..")
+    print(f"[+] Scraping {MAX_ARTICLES} articles randomly")
     
     maal = []
     try:
@@ -186,7 +186,7 @@ def get_maal(base_urls=[]):
             except Exception as err:
                 print("\033[31m" + '[error] fetching', url, str(err) + "\033[m")
     except KeyboardInterrupt: 
-        print("closing...")
+        print("[+] content generation stopped!")
     except Exception as e:
         print("\033[93m" + '[!] Error occured:', str(err) + "\033[m")
 
