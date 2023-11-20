@@ -51,8 +51,8 @@ def generate_options(options):
     # Create an inline keyboard with options
     markup = types.InlineKeyboardMarkup(row_width=1)
     for option in options:
-        if len(options) > 22:
-            option = option[:22] + "..."
+        if len(option) > 40:
+            option = option[:40] + "..."
         button = types.InlineKeyboardButton(option, callback_data=option)
         markup.add(button)
     return markup
@@ -60,16 +60,19 @@ def generate_options(options):
 # Function to send the daily post
 def send_daily_post(chat_id):
     options, daily_post = get_daily_post()
-    # print("\033[96m" + "options: " + str(options) + "\033[m")
+    # print("\033[96m" + "options: " + str(list(options)) + "\033[m")
     try:
         markup = generate_options(list(options))
         bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
     except Exception as err:
         print("\033[31m" + '[error] ' + str(err) + "\033[m")
-        print("\033[93m" + "options: " + options + "\033[m")
-        options = list(map(str, list(range(1, Narticles + 1)))) # remove this before main deployment
-        markup = generate_options(options)
-        bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
+        print("\033[93m" + "options: " + str(options) + "\033[m")
+
+        # remove this before main deployment
+        bot.send_message(chat_id, "Nothing to display!")
+        bot.send_message(ADMIN_CHAT_ID, f"Error with /get. {err}")
+
+
 
 # Send all the registered users
 def send_all():
@@ -212,7 +215,7 @@ def start(message):
 
     chat_id = message.chat.id
     
-    if chat_id in admins_chat_ids:
+    if chat_id in admins_chat_ids[0:1]:
         INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets\n/remove USER_ID - For deleting a user\n/add_url URL1 URL2 - For updating store\n/heyyy - Display logs"
 
     else:
