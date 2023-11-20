@@ -117,7 +117,7 @@ def handle_choice(call):
 
         # edit (randi_rona)
         elif choice == "Edit":
-            next_message = "Use /edit for making suggestions.\nExamples:\n'/edit make it shorter'\n'/edit remove all the emojis'"
+            next_message = "Use /edit for making suggestions.\nExamples:\n`/edit make it shorter`\n`/edit remove all the emojis`"
             bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
             bot.send_message(chat_id, next_message)
 
@@ -157,7 +157,7 @@ def handle_choice(call):
             users_chat_ids[chat_id]['khabar']['title'] = khabar_title
             users_chat_ids[chat_id]['khabar']['content'] = khabar_content
 
-            next_message = "You have selected:\nTitle: " + khabar_title + "\nTweet: " + "`" + khabar_content + "`"
+            next_message = "Title: " + khabar_title + "\nTweet: " + "`" + khabar_content + "`"
             options = ["Edit", "Submit"]
             markup = generate_options(options)
 
@@ -312,24 +312,23 @@ def edit(message):
     global users_chat_ids
     khabar_content = users_chat_ids[chat_id]['khabar']['content']
 
-    if not text:
-        return
-
     if chat_id not in users_chat_ids:
         bot.reply_to(message, "You are not registered! please /login")
         return 
+    
+    if not text:
+        next_message = "Command usage examples:\n`/edit make it shorter`\n`/edit remove all the emojis`"
+        bot.reply_to(message, next_message)
+        return
 
     khabar_content = randi_rona(text=text, khabar_content=khabar_content)
     users_chat_ids[chat_id]['khabar']['content'] = khabar_content
 
     next_message = "Tweet: `" + khabar_content + "`"
-    bot.reply_to(message, next_message, parse_mode='Markdown')
-
-    next_message = "Confirm?"
-    options = ["Yes", "No"]
+    options = ["Edit", "Submit"]
     markup = generate_options(options)
 
-    bot.send_message(chat_id, next_message, reply_markup=markup)
+    bot.reply_to(message, next_message, parse_mode='Markdown', reply_markup=markup)
 
 
 # tweet (REGISTERED USERS)
@@ -343,16 +342,18 @@ def tweet(message):
 
     global users_chat_ids
 
-    if not text:
-        return
-
     if chat_id not in users_chat_ids:
         bot.reply_to(message, "You are not registered! please /login")
         return
     
+    if not text:
+        next_message = "Command usage examples:\n`/tweet Hell'o world`\n`/remove You didn't believe in us, god did`"
+        bot.reply_to(message, next_message)
+        return
+    
     users_chat_ids[chat_id]['khabar']['content'] = text
 
-    next_message = "You have selected:\nTweet: " + "`" + text + "`"
+    next_message = "Tweet: " + "`" + text + "`"
     options = ["Edit", "Submit"]
     markup = generate_options(options)
 
