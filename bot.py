@@ -43,6 +43,39 @@ bot_online = True
 
 
 """
+try-catch wrapping for bot interactions
+"""
+
+# sending messages
+def send_message(chat_id, text, parse_mode=None, reply_markup=None, timeout=None):
+    try:
+        bot.send_message(chat_id, text, parse_mode, reply_markup, timeout)
+    except Exception as e:
+        print("\033[31m" + "[error] (while sending message)" + str(e) + "\033[m")
+
+# replying
+def bot_reply(message, text, **kwargs):
+    try:
+        bot.reply_to(message, text, **kwargs)
+    except Exception as e:
+        print("\033[31m" + "[error] (while reply_to)" + str(e) + "\033[m")
+
+# remove texts
+def delete_message(chat_id, message_id):
+    try:
+        bot.delete_message(chat_id, message_id)
+    except Exception as e:
+        print("\033[31m" + "[error] (while deleting bot message)" + str(e) + "\033[m")
+
+# edit messages
+def remove_markup(chat_id, message_id, reply_markup=None):
+    try:
+        bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+    except Exception as e:
+        print("\033[31m" + "[error] (while removing markup)" + str(e) + "\033[m")
+
+
+"""
 UTILITIES
 """
 
@@ -63,14 +96,14 @@ def send_daily_post(chat_id):
     # print("\033[96m" + "options: " + str(list(options)) + "\033[m")
     try:
         markup = generate_options(list(options))
-        bot.send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
+        send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
     except Exception as err:
         print("\033[31m" + '[error] ' + str(err) + "\033[m")
         print("\033[93m" + "options: " + str(options) + "\033[m")
 
         # remove this before main deployment
-        bot.send_message(chat_id, "Nothing to display!")
-        bot.send_message(ADMIN_CHAT_ID, f"Error with /get. {err}")
+        send_message(chat_id, "Nothing to display!")
+        send_message(ADMIN_CHAT_ID, f"Error with /get. {err}")
 
 
 
@@ -102,12 +135,12 @@ def handle_choice(call):
         # approved
         if choice == "Yes":
             status = submit_post(khabar_content)
-            bot.send_message(chat_id, status)
-            bot.delete_message(chat_id, message_id)
+            send_message(chat_id, status)
+            delete_message(chat_id, message_id)
         
         # denied
         elif choice == "No":
-            bot.delete_message(chat_id, message_id)
+            delete_message(chat_id, message_id)
 
         # submit (tweet)
         elif choice == "Submit":
@@ -115,14 +148,14 @@ def handle_choice(call):
             options = ["Yes", "No"]
             markup = generate_options(options)
 
-            bot.send_message(chat_id, next_message, reply_markup=markup)
-            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+            send_message(chat_id, next_message, reply_markup=markup)
+            remove_markup(chat_id, message_id, reply_markup=None)
 
         # edit (randi_rona)
         elif choice == "Edit":
             next_message = "Use /edit for making suggestions.\nExamples:\n`/edit make it shorter`\n`/edit remove all the emojis`"
-            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
-            bot.send_message(chat_id, next_message)
+            remove_markup(chat_id, message_id, reply_markup=None)
+            send_message(chat_id, next_message)
 
     # admin ka maamla chal rha hai (approve or reject)
     elif choice in ["APPROVE", "REJECT"]:
@@ -137,14 +170,14 @@ def handle_choice(call):
                 }
             }
             save_users(users_chat_ids)
-            bot.send_message(requesting_user_id, "Access Granted!")
-            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
-            bot.send_message(chat_id, message.text.replace('Grant access?','Access Granted to:'))
+            send_message(requesting_user_id, "Access Granted!")
+            remove_markup(chat_id, message_id, reply_markup=None)
+            send_message(chat_id, message.text.replace('Grant access?','Access Granted to:'))
 
         # reject bot access
         elif choice == "REJECT":
-            bot.send_message(requesting_user_id, "Access Rejected!")
-            bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
+            send_message(requesting_user_id, "Access Rejected!")
+            remove_markup(chat_id, message_id, reply_markup=None)
 
     # user ka hi maamla chal rha hai (post selection)
     else:
@@ -164,10 +197,10 @@ def handle_choice(call):
             options = ["Edit", "Submit"]
             markup = generate_options(options)
 
-            bot.send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
+            send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
         except Exception as err:
             print("\033[31m" + '[error] ' + str(err) + "\033[m")
-            bot.send_message(chat_id, "Invalid action!")
+            send_message(chat_id, "Invalid action!")
 
 
 # COMMANDS
@@ -204,7 +237,7 @@ def start(message):
 ```MKNC```
     """
 
-    bot.send_message(message.chat.id, new_message, parse_mode="Markdown")
+    send_message(message.chat.id, new_message, parse_mode="Markdown")
 
 
 # hello (general users)
@@ -221,7 +254,7 @@ def start(message):
     else:
         INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets"
 
-    bot.reply_to(message, INFO)
+    bot_reply(message, INFO)
 
 
 # login (GENERAL USERS)
@@ -233,7 +266,7 @@ def login(message):
     user_id = message.from_user.id
 
     if user_id in users_chat_ids:
-        bot.reply_to(message, "You are registered.")
+        bot_reply(message, "You are registered.")
         return 
 
     user_username = message.from_user.username
@@ -245,7 +278,7 @@ def login(message):
     markup = generate_options(options)
 
     for admin in admins_chat_ids[0:1]:
-        bot.send_message(admin, next_message, reply_markup=markup)
+        send_message(admin, next_message, reply_markup=markup)
 
 
 ############ REGISTERED ############
@@ -260,7 +293,7 @@ def get(message):
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
-        bot.reply_to(message, "You are not registered! please /login")
+        bot_reply(message, "You are not registered! please /login")
         return
     
     send_daily_post(chat_id)
@@ -275,7 +308,7 @@ def new(message):
     chat_id = message.chat.id
 
     if chat_id not in users_chat_ids:
-        bot.reply_to(message, "You are not registered! please /login")
+        bot_reply(message, "You are not registered! please /login")
         return
     
     global previous_generate
@@ -294,11 +327,11 @@ def new(message):
             "Patience appreciated as we update our content for you."
         ]
         reply = random.choice(update_messages)
-        bot.reply_to(message, reply)
+        bot_reply(message, reply)
         return
 
     previous_generate = time.time()
-    bot.reply_to(message, "Generating... might take a minute")
+    bot_reply(message, "Generating... might take a minute")
     update_maal()
     send_daily_post(chat_id)
 
@@ -316,12 +349,12 @@ def edit(message):
     khabar_content = users_chat_ids[chat_id]['khabar']['content']
 
     if chat_id not in users_chat_ids:
-        bot.reply_to(message, "You are not registered! please /login")
+        bot_reply(message, "You are not registered! please /login")
         return 
     
     if not text:
         next_message = "Command usage examples:\n`/edit make it shorter`\n`/edit remove all the emojis`"
-        bot.reply_to(message, next_message)
+        bot_reply(message, next_message)
         return
 
     khabar_content = randi_rona(text=text, khabar_content=khabar_content)
@@ -331,7 +364,7 @@ def edit(message):
     options = ["Edit", "Submit"]
     markup = generate_options(options)
 
-    bot.reply_to(message, next_message, parse_mode='Markdown', reply_markup=markup)
+    bot_reply(message, next_message, parse_mode='Markdown', reply_markup=markup)
 
 
 # tweet (REGISTERED USERS)
@@ -346,12 +379,12 @@ def tweet(message):
     global users_chat_ids
 
     if chat_id not in users_chat_ids:
-        bot.reply_to(message, "You are not registered! please /login")
+        bot_reply(message, "You are not registered! please /login")
         return
     
     if not text:
         next_message = "Command usage examples:\n`/tweet Hell'o world`\n`/remove You didn't believe in us, god did`"
-        bot.reply_to(message, next_message)
+        bot_reply(message, next_message)
         return
     
     users_chat_ids[chat_id]['khabar']['content'] = text
@@ -360,7 +393,7 @@ def tweet(message):
     options = ["Edit", "Submit"]
     markup = generate_options(options)
 
-    bot.send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
+    send_message(chat_id, next_message, reply_markup=markup, parse_mode='Markdown')
 
 
 # # authenticate twitter (REGISTERED USERS)
@@ -376,10 +409,10 @@ def tweet(message):
 #         return
 
 #     if chat_id not in users_chat_ids:
-#         bot.reply_to(message, "You are not registered! please /login")
+#         bot_reply(message, "You are not registered! please /login")
 #         return
     
-#     bot.reply_to(message, "[feature under construction]")
+#     bot_reply(message, "[feature under construction]")
 
 
 ############ ADMIN ############
@@ -402,7 +435,7 @@ def add_url(message):
     articles_urls.extend(urls)
     write_articles_urls(articles_urls)
 
-    bot.reply_to(message, "articles urls updated!")
+    bot_reply(message, "articles urls updated!")
 
 
 # remove a registered user (ADMIN USERS)
@@ -422,10 +455,10 @@ def remove(message):
         user_id = int(text)
         users_chat_ids.pop(user_id)
         save_users(users_chat_ids)
-        bot.reply_to(message, f"Deleted user_id: {user_id}")
-        bot.send_message(user_id, "Your access has been terminated!")
+        bot_reply(message, f"Deleted user_id: {user_id}")
+        send_message(user_id, "Your access has been terminated!")
     except Exception as e:
-        bot.reply_to(message, f"Some error while deleting a user, error: {e}")
+        bot_reply(message, f"Some error while deleting a user, error: {e}")
 
     
 # heyyy (ADMIN USERS)
@@ -439,7 +472,7 @@ def heyyy(message):
     if chat_id not in admins_chat_ids:
         return 
     
-    bot.reply_to(message, "heyyy!")
+    bot_reply(message, "heyyy!")
 
     if not os.path.exists('tmp/logs.txt'):
         with open('tmp/logs.txt', 'a') as file:
@@ -448,9 +481,9 @@ def heyyy(message):
     try:
         with open('tmp/logs.txt', 'r') as file:
             logs = file.read().strip()
-        bot.send_message(chat_id, logs)
+        send_message(chat_id, logs)
     except Exception as err:
-        bot.send_message(chat_id, "LOGS too long!\nview here: https://xtweet.gamhcrew.repl.co/logs\nor view the file below.")
+        send_message(chat_id, "LOGS too long!\nview here: https://xtweet.gamhcrew.repl.co/logs\nor view the file below.")
         # send logs.txt
         doc = open('tmp/logs.txt', 'rb')
         bot.send_document(message.chat.id, doc)
