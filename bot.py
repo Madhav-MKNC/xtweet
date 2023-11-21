@@ -9,7 +9,6 @@ import time
 import random
 
 from utils import save_logs
-from utils.hot import Narticles
 
 from utils.bot_utils import (
     get_daily_post,
@@ -51,34 +50,34 @@ def send_message(chat_id, text, parse_mode=None, reply_markup=None, timeout=None
     try:
         bot.send_message(chat_id, text, parse_mode, reply_markup, timeout)
     except Exception as e:
-        print("\033[31m" + "[error] (while sending message)" + str(e) + "\033[m")
+        print("\033[31m" + "[error] (while sending message) " + str(e) + "\033[m")
 
 # replying
 def bot_reply(message, text, **kwargs):
     try:
         bot.reply_to(message, text, **kwargs)
     except Exception as e:
-        print("\033[31m" + "[error] (while reply_to)" + str(e) + "\033[m")
+        print("\033[31m" + "[error] (while reply_to) " + str(e) + "\033[m")
 
 # remove texts
 def delete_message(chat_id, message_id):
     try:
         bot.delete_message(chat_id, message_id)
     except Exception as e:
-        print("\033[31m" + "[error] (while deleting bot message)" + str(e) + "\033[m")
+        print("\033[31m" + "[error] (while deleting bot message) " + str(e) + "\033[m")
 
 # edit messages
 def remove_markup(chat_id, message_id, reply_markup=None):
     try:
         bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
     except Exception as e:
-        print("\033[31m" + "[error] (while removing markup)" + str(e) + "\033[m")
+        print("\033[31m" + "[error] (while removing markup) " + str(e) + "\033[m")
 
 def send_document(chat_id, document):
     try:
         bot.send_document(chat_id, document)
     except Exception as e:
-        print("\033[31m" + "[error] (while sending document)" + str(e) + "\033[m")
+        print("\033[31m" + "[error] (while sending document) " + str(e) + "\033[m")
 
 
 """
@@ -100,17 +99,8 @@ def generate_options(options):
 def send_daily_post(chat_id):
     options, daily_post = get_daily_post()
     # print("\033[96m" + "options: " + str(list(options)) + "\033[m")
-    try:
-        markup = generate_options(list(options))
-        send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
-    except Exception as err:
-        print("\033[31m" + '[error] ' + str(err) + "\033[m")
-        print("\033[93m" + "options: " + str(options) + "\033[m")
-
-        # remove this before main deployment
-        send_message(chat_id, "Nothing to display!")
-        send_message(ADMIN_CHAT_ID, f"Error with /get. {err}")
-
+    markup = generate_options(list(options))
+    send_message(chat_id, daily_post, reply_markup=markup, parse_mode="Markdown")
 
 
 # Send all the registered users
@@ -483,17 +473,11 @@ def heyyy(message):
     if not os.path.exists('tmp/logs.txt'):
         with open('tmp/logs.txt', 'a') as file:
             file.write("")
-    
-    try:
-        with open('tmp/logs.txt', 'r') as file:
-            logs = file.read().strip()
-        send_message(chat_id, logs)
-    except Exception as err:
-        send_message(chat_id, "LOGS too long!\nview here: https://xtweet.gamhcrew.repl.co/logs\nor view the file below.")
-        # send logs.txt
-        doc = open('tmp/logs.txt', 'rb')
+        return
+
+    send_message(chat_id, "view here: https://xtweet.gamhcrew.repl.co/logs\nor view the file below.")
+    with open('tmp/logs.txt', 'rb') as doc:
         send_document(message.chat.id, doc)
-        print("\033[93m" + '[error] /heyyy ' + str(err) + "\033[m")
 
 
 # Function to start the daily post at 12:00 and 00:00
