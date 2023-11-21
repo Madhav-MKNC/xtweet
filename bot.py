@@ -74,6 +74,12 @@ def remove_markup(chat_id, message_id, reply_markup=None):
     except Exception as e:
         print("\033[31m" + "[error] (while removing markup)" + str(e) + "\033[m")
 
+def send_document(chat_id, document):
+    try:
+        bot.send_document(chat_id, document)
+    except Exception as e:
+        print("\033[31m" + "[error] (while sending document)" + str(e) + "\033[m")
+
 
 """
 UTILITIES
@@ -486,8 +492,8 @@ def heyyy(message):
         send_message(chat_id, "LOGS too long!\nview here: https://xtweet.gamhcrew.repl.co/logs\nor view the file below.")
         # send logs.txt
         doc = open('tmp/logs.txt', 'rb')
-        bot.send_document(message.chat.id, doc)
-        # print("\033[31m" + '[error] /heyyy ' + str(err) + "\033[m")
+        send_document(message.chat.id, doc)
+        print("\033[93m" + '[error] /heyyy ' + str(err) + "\033[m")
 
 
 # Function to start the daily post at 12:00 and 00:00
