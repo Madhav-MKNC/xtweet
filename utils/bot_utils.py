@@ -17,7 +17,8 @@ def synthesize_maal():
     maal = {}
     articles = get_maal(base_urls=articles_store)
     for i in articles:
-        maal[i['topic']] = i['content']
+        idx = i['topic'][:50] + "..." if i['topic'] > 50 else i['topic']
+        maal[idx] = i['content']
     # maal = {
     #     "0": 'nanha ',
     #     "1": 'bada ',

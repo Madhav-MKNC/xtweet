@@ -46,16 +46,21 @@ try-catch wrapping for bot interactions
 """
 
 # sending messages
-def send_message(chat_id, text, parse_mode=None, reply_markup=None, timeout=None):
+def send_message(chat_id, text, reply_markup=None, timeout=None, parse_mode="Markdown"):
     try:
-        bot.send_message(chat_id, text, parse_mode, reply_markup, timeout)
+        if reply_markup is not None:
+            print("here got you")
+            bot.send_message(chat_id, text, reply_markup=reply_markup, parse_mode=parse_mode, timeout=timeout)
+        else:
+            print("oh not again")
+            bot.send_message(chat_id, text, parse_mode=parse_mode, timeout=timeout)
     except Exception as e:
         print("\033[31m" + "[error] (while sending message) " + str(e) + "\033[m")
 
 # replying
 def bot_reply(message, text, **kwargs):
     try:
-        bot.reply_to(message, text, **kwargs)
+        bot.reply_to(message, text, **kwargs) # NOTE NOTE NOTE NOTE 
     except Exception as e:
         print("\033[31m" + "[error] (while reply_to) " + str(e) + "\033[m")
 
@@ -67,7 +72,7 @@ def delete_message(chat_id, message_id):
         print("\033[31m" + "[error] (while deleting bot message) " + str(e) + "\033[m")
 
 # edit messages
-def remove_markup(chat_id, message_id, reply_markup=None):
+def remove_markup(chat_id, message_id):
     try:
         bot.edit_message_reply_markup(chat_id, message_id, reply_markup=None)
     except Exception as e:
@@ -89,8 +94,8 @@ def generate_options(options):
     # Create an inline keyboard with options
     markup = types.InlineKeyboardMarkup(row_width=1)
     for option in options:
-        if len(option) > 40:
-            option = option[:40] + "..."
+        # if len(option) > 50:
+        #     option = option[:50] + "..."
         button = types.InlineKeyboardButton(option, callback_data=option)
         markup.add(button)
     return markup
@@ -145,12 +150,12 @@ def handle_choice(call):
             markup = generate_options(options)
 
             send_message(chat_id, next_message, reply_markup=markup)
-            remove_markup(chat_id, message_id, reply_markup=None)
+            remove_markup(chat_id, message_id)
 
         # edit (randi_rona)
         elif choice == "Edit":
             next_message = "Use /edit for making suggestions.\nExamples:\n`/edit make it shorter`\n`/edit remove all the emojis`"
-            remove_markup(chat_id, message_id, reply_markup=None)
+            remove_markup(chat_id, message_id)
             send_message(chat_id, next_message)
 
     # admin ka maamla chal rha hai (approve or reject)
@@ -167,13 +172,13 @@ def handle_choice(call):
             }
             save_users(users_chat_ids)
             send_message(requesting_user_id, "Access Granted!")
-            remove_markup(chat_id, message_id, reply_markup=None)
+            remove_markup(chat_id, message_id)
             send_message(chat_id, message.text.replace('Grant access?','Access Granted to:'))
 
         # reject bot access
         elif choice == "REJECT":
             send_message(requesting_user_id, "Access Rejected!")
-            remove_markup(chat_id, message_id, reply_markup=None)
+            remove_markup(chat_id, message_id)
 
     # user ka hi maamla chal rha hai (post selection)
     else:
