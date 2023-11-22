@@ -60,7 +60,7 @@ def send_message(chat_id, text, reply_markup=None, timeout=None, parse_mode="Mar
 # replying
 def bot_reply(message, text, **kwargs):
     try:
-        bot.reply_to(message, text, **kwargs) # NOTE NOTE NOTE NOTE 
+        bot.reply_to(message, text, **kwargs)
     except Exception as e:
         print("\033[31m" + "[error] (while reply_to) " + str(e) + "\033[m")
 
@@ -94,8 +94,8 @@ def generate_options(options):
     # Create an inline keyboard with options
     markup = types.InlineKeyboardMarkup(row_width=1)
     for option in options:
-        # if len(option) > 50:
-        #     option = option[:50] + "..."
+        # if len(option) > 50: # remove this
+        #     option = option[:50] + "..." # remove this
         button = types.InlineKeyboardButton(option, callback_data=option)
         markup.add(button)
     return markup
