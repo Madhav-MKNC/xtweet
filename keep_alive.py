@@ -13,7 +13,7 @@ def home():
 def logs():
     # display logs
     try:
-        with open('tmp/logs.txt', 'r') as file:
+        with open('.logs.txt', 'r') as file:
             display = file.read().strip()
     except Exception as err:
         display = f"[error] {str(err)}"

@@ -164,12 +164,23 @@ def handle_choice(call):
 
         # approve bot access
         if choice == "APPROVE":
-            users_chat_ids[requesting_user_id] = {
-                "khabar": {
-                    "title": "",
-                    "content": ""
+            users_chat_ids.update(
+                {
+                    requesting_user_id : {
+                        "khabar" : {
+                            "title" : "",
+                            "content" : ""
+                        },
+                        "info" : message.text.replace('Grant access?','').strip()
+                    }
                 }
-            }
+            )
+            # users_chat_ids[requesting_user_id] = {
+            #     "khabar" : {
+            #         "title" : "",
+            #         "content" : ""
+            #     }
+            # }
             save_users(users_chat_ids)
             send_message(requesting_user_id, "Access Granted!")
             remove_markup(chat_id, message_id)
@@ -293,7 +304,9 @@ def login(message):
     user_first_name = message.from_user.first_name
     user_last_name = message.from_user.last_name
 
-    next_message = f"Grant access?\nusername: {user_username}\nfirst name: {user_first_name}\nlast name: {user_last_name}\nuser id: {user_id}" # don't change it (see "elif 'APPROVE'" code) 
+    # don't change it (see "elif 'APPROVE'" code) 
+    next_message = f"Grant access?\nusername: {user_username}\nfirst name: {user_first_name}\nlast name: {user_last_name}\nuser id: {user_id}" 
+
     options = ["APPROVE", "REJECT"]
     markup = generate_options(options)
 

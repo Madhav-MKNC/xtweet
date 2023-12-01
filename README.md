@@ -1,6 +1,8 @@
 # xtweet
 Telegram bot for auto tweeting 
 
+<a href="https://t.me/x_tweet_bot">access bot here</a>
+
 ## COMMANDS
 
 #### For general users:

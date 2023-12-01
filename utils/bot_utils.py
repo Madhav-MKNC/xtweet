@@ -20,10 +20,10 @@ def synthesize_maal():
         idx = i['topic'][:50] + "..." if len(i['topic']) > 50 else i['topic']
         maal[idx] = i['content']
     # maal = {
-    #     "0": 'nanha ',
-    #     "1": 'bada ',
-    #     "2": 'pyaara ',
-    #     "3": 'chota '
+    #     "0" : 'nanha ',
+    #     "1" : 'bada ',
+    #     "2" : 'pyaara ',
+    #     "3" : 'chota '
     # }
     return maal
 
