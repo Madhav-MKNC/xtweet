@@ -209,7 +209,7 @@ def handle_choice(call):
 """
 For general users:
 /test           ==> temp command for testing/debugging
-/start          ==> entry point (other commands: /hello, /hi, /help)
+/start          ==> entry point (other commands: /hello, /hi, /help, /menu)
 /login          ==> for bot access
 
 For registered users:
@@ -273,7 +273,7 @@ def start(message):
     save_logs(message)
 
     chat_id = message.chat.id
-    INFO = ADMIN_INFO if chat_id in admins_chat_ids[0:1] else USER_INFO
+    INFO = ADMIN_INFO if chat_id in admins_chat_ids else USER_INFO
     bot_reply(message, INFO)
 
 

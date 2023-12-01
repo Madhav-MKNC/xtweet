@@ -5,7 +5,7 @@ Telegram bot for auto tweeting
 
 #### For general users:
 - /test           ==> temp command for testing/debugging
-- /start          ==> entry point (other commands: /hello, /hi, /help)
+- /start          ==> entry point (other commands: /hello, /hi, /help, /menu)
 - /login          ==> for bot access
 
 #### For registered users:
