@@ -205,6 +205,7 @@ def handle_choice(call):
 
 
 # COMMANDS
+
 """
 For general users:
 /test           ==> temp command for testing/debugging
@@ -225,6 +226,30 @@ For admin users:
 """
 
 
+# MENU INFO
+
+ADMIN_INFO ="""
+Hello! I am Xtweet.\n
+/start - This message
+/login - For access
+/tweet - For manually written tweets
+/get - For generating hot tweets
+/new - For updating hot tweets
+/remove USER_ID - For deleting a user
+/add_url URL1 URL2 - For updating store
+/heyyy - Display logs
+""".strip()
+
+USER_INFO = """
+Hello! I am Xtweet.\n
+/start - This message
+/login - For access
+/tweet - For manually written tweets
+/get - For generating hot tweets
+/new - For updating hot tweets
+""".strip()
+
+
 ############ GENERAL ############
 
 
@@ -242,19 +267,13 @@ def start(message):
 
 
 # hello (general users)
-@bot.message_handler(commands=["start", "hello", "hi", "help"])
+@bot.message_handler(commands=["start", "hello", "hi", "help", "menu"])
 def start(message):
     # save logs
     save_logs(message)
 
     chat_id = message.chat.id
-    
-    if chat_id in admins_chat_ids[0:1]:
-        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets\n/remove USER_ID - For deleting a user\n/add_url URL1 URL2 - For updating store\n/heyyy - Display logs"
-
-    else:
-        INFO = "Hello! I am Xtweet.\n\n/start - This message\n/login - For access\n/tweet - For manually written tweets\n/get - For generating hot tweets\n/new - For updating hot tweets"
-
+    INFO = ADMIN_INFO if chat_id in admins_chat_ids[0:1] else USER_INFO
     bot_reply(message, INFO)
 
 
