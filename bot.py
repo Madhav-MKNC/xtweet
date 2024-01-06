@@ -512,7 +512,7 @@ def heyyy(message):
             file.write("")
         return
 
-    send_message(chat_id, "view here: https://xtweet.gamhcrew.repl.co/logs\nor view the file below.")
+    send_message(chat_id, "view here: https://cf7b90c1-7c75-44b7-a1ba-12c04dfbddd4-00-3uh96qyeu6ldi.asia-a.replit.dev/logs\nor view the file below.")
     with open('tmp/logs.txt', 'rb') as doc:
         send_document(message.chat.id, doc)
 
